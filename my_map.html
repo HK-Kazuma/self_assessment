@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>自己分析マップ ― 根っこと現在地</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700&family=Noto+Serif+JP:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+:root{
+  --paper:#f4f0e6;
+  --paper2:#ece5d4;
+  --ink:#2a2722;
+  --ink-soft:#5c574d;
+  --ink-faint:#8c8574;
+  --line:#c9bfa8;
+  --indigo:#3d4f6b;
+  --indigo-soft:#e4e9f0;
+  --terracotta:#b8683f;
+  --terracotta-soft:#f4e6dc;
+  --sage:#5f7a5e;
+  --sage-soft:#e6ede2;
+  --gold:#a9832f;
+}
+
+*{box-sizing:border-box;margin:0;padding:0;}
+
+body{
+  background:var(--paper);
+  background-image:
+    radial-gradient(circle at 15% 8%, rgba(61,79,107,0.04), transparent 40%),
+    radial-gradient(circle at 90% 60%, rgba(184,104,63,0.04), transparent 45%);
+  color:var(--ink);
+  font-family:'Noto Sans JP',sans-serif;
+  line-height:1.85;
+  padding:0 0 6rem;
+}
+
+.wrap{max-width:920px;margin:0 auto;padding:0 1.75rem;}
+
+/* ── Hero ── */
+.hero{
+  padding:4.5rem 0 3rem;
+  border-bottom:1px solid var(--line);
+  position:relative;
+}
+.hero-eyebrow{
+  font-family:'JetBrains Mono',monospace;
+  font-size:0.72rem;
+  letter-spacing:0.14em;
+  color:var(--ink-faint);
+  text-transform:uppercase;
+  margin-bottom:1rem;
+}
+.hero h1{
+  font-family:'Shippori Mincho',serif;
+  font-weight:700;
+  font-size:2.6rem;
+  letter-spacing:0.02em;
+  line-height:1.4;
+  color:var(--ink);
+}
+.hero h1 span{color:var(--indigo);}
+.hero-desc{
+  margin-top:1.1rem;
+  max-width:560px;
+  color:var(--ink-soft);
+  font-size:0.95rem;
+}
+.hero-meta{
+  display:flex;
+  gap:1.5rem;
+  margin-top:2rem;
+  flex-wrap:wrap;
+}
+.meta-chip{
+  font-family:'JetBrains Mono',monospace;
+  font-size:0.72rem;
+  color:var(--ink-soft);
+  border:1px solid var(--line);
+  border-radius:20px;
+  padding:5px 14px;
+  background:var(--paper2);
+}
+
+/* ── Root diagram (signature element) ── */
+.root-section{
+  padding:3.5rem 0 2rem;
+  border-bottom:1px solid var(--line);
+}
+.root-section h2{
+  font-family:'Shippori Mincho',serif;
+  font-size:1.3rem;
+  margin-bottom:0.4rem;
+}
+.root-caption{
+  font-size:0.85rem;
+  color:var(--ink-soft);
+  margin-bottom:1.8rem;
+  max-width:600px;
+}
+.root-svg-wrap{
+  width:100%;
+  overflow-x:auto;
+}
+.root-svg-wrap svg{display:block;margin:0 auto;}
+
+.rlabel{font-family:'Noto Serif JP',serif;font-size:13px;fill:var(--ink);}
+.rlabel-sub{font-family:'JetBrains Mono',monospace;font-size:9.5px;fill:var(--ink-faint);letter-spacing:0.03em;}
+.rtrunk{stroke:var(--ink-soft);stroke-width:2;fill:none;stroke-linecap:round;}
+.rbranch-a{stroke:var(--indigo);stroke-width:2;fill:none;stroke-linecap:round;}
+.rbranch-b{stroke:var(--terracotta);stroke-width:2;fill:none;stroke-linecap:round;}
+.rbranch-c{stroke:var(--sage);stroke-width:2;fill:none;stroke-linecap:round;}
+.rnode{stroke-width:2;}
+
+/* ── Chapter blocks ── */
+.chapter{
+  padding:3.5rem 0;
+  border-bottom:1px solid var(--line);
+}
+.chapter:last-of-type{border-bottom:none;}
+
+.chapter-head{
+  display:flex;
+  align-items:baseline;
+  gap:14px;
+  margin-bottom:0.6rem;
+}
+.chapter-num{
+  font-family:'JetBrains Mono',monospace;
+  font-size:0.8rem;
+  color:var(--ink-faint);
+}
+.chapter-title{
+  font-family:'Shippori Mincho',serif;
+  font-weight:700;
+  font-size:1.55rem;
+}
+.chapter-title em{font-style:normal;}
+.chapter-sub{
+  color:var(--ink-soft);
+  font-size:0.9rem;
+  max-width:640px;
+  margin-bottom:1.8rem;
+}
+
+/* accent variants */
+.acc-indigo .chapter-title{color:var(--indigo);}
+.acc-terracotta .chapter-title{color:var(--terracotta);}
+.acc-sage .chapter-title{color:var(--sage);}
+
+/* Fact / interpretation cards */
+.card-row{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:1.1rem;
+  margin-bottom:1.4rem;
+}
+@media (max-width:680px){.card-row{grid-template-columns:1fr;}}
+
+.card{
+  background:var(--paper2);
+  border:1px solid var(--line);
+  border-radius:4px;
+  padding:1.1rem 1.3rem;
+}
+.card-label{
+  font-family:'JetBrains Mono',monospace;
+  font-size:0.68rem;
+  letter-spacing:0.08em;
+  text-transform:uppercase;
+  color:var(--ink-faint);
+  margin-bottom:0.5rem;
+}
+.card ul{padding-left:1.1rem;font-size:0.88rem;color:var(--ink-soft);}
+.card li{margin-bottom:0.35rem;}
+.card p{font-size:0.88rem;color:var(--ink-soft);}
+
+/* Quote callout */
+.quote{
+  border-left:3px solid var(--ink-faint);
+  padding:0.3rem 0 0.3rem 1.2rem;
+  margin:1.3rem 0;
+  font-family:'Noto Serif JP',serif;
+  font-size:0.95rem;
+  color:var(--ink);
+  font-style:normal;
+}
+.quote cite{
+  display:block;
+  margin-top:0.35rem;
+  font-family:'JetBrains Mono',monospace;
+  font-size:0.68rem;
+  color:var(--ink-faint);
+  font-style:normal;
+}
+
+/* Mechanism / process steps */
+.steps{
+  display:flex;
+  flex-wrap:wrap;
+  gap:0.6rem;
+  margin:1.4rem 0;
+  align-items:center;
+}
+.step{
+  background:var(--paper);
+  border:1px solid var(--line);
+  border-radius:3px;
+  padding:0.55rem 0.9rem;
+  font-size:0.82rem;
+  color:var(--ink-soft);
+  white-space:nowrap;
+}
+.step b{color:var(--ink);font-weight:600;}
+.step-arrow{color:var(--ink-faint);font-size:1rem;}
+
+/* Compare table (before/after or bad/good) */
+.compare{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:1rem;
+  margin:1.2rem 0;
+}
+@media (max-width:680px){.compare{grid-template-columns:1fr;}}
+.compare .col{
+  padding:1rem 1.2rem;
+  border-radius:4px;
+  font-size:0.86rem;
+}
+.compare .col.neg{background:var(--terracotta-soft);border:1px solid #e3c6b5;}
+.compare .col.pos{background:var(--sage-soft);border:1px solid #c9d9c6;}
+.compare .col h4{font-family:'Noto Serif JP',serif;font-size:0.85rem;margin-bottom:0.5rem;color:var(--ink);}
+.compare .col ul{padding-left:1.1rem;color:var(--ink-soft);}
+.compare .col li{margin-bottom:0.3rem;}
+
+/* Core value callout box */
+.core-box{
+  background:var(--indigo-soft);
+  border:1px solid #c7d2e0;
+  border-radius:4px;
+  padding:1.3rem 1.5rem;
+  margin:1.4rem 0;
+}
+.core-box.terracotta{background:var(--terracotta-soft);border-color:#e3c6b5;}
+.core-box.sage{background:var(--sage-soft);border-color:#c9d9c6;}
+.core-box .label{
+  font-family:'JetBrains Mono',monospace;
+  font-size:0.68rem;
+  letter-spacing:0.08em;
+  text-transform:uppercase;
+  color:var(--ink-faint);
+  margin-bottom:0.5rem;
+}
+.core-box p{font-family:'Noto Serif JP',serif;font-size:1rem;line-height:1.75;color:var(--ink);}
+
+/* DQ metaphor mini-diagram */
+.dq-row{
+  display:flex;
+  align-items:center;
+  gap:0.5rem;
+  flex-wrap:wrap;
+  margin:1.3rem 0;
+  font-family:'JetBrains Mono',monospace;
+  font-size:0.78rem;
+}
+.dq-pill{
+  background:var(--paper);
+  border:1px solid var(--line);
+  border-radius:20px;
+  padding:0.4rem 0.9rem;
+  color:var(--ink-soft);
+}
+.dq-pill.hi{border-color:var(--sage);color:var(--sage);background:var(--sage-soft);}
+.dq-arrow{color:var(--ink-faint);}
+
+/* Synthesis section */
+.synthesis{
+  padding:3.5rem 0;
+}
+.synthesis h2{
+  font-family:'Shippori Mincho',serif;
+  font-size:1.5rem;
+  margin-bottom:0.4rem;
+}
+.synthesis .sub{color:var(--ink-soft);font-size:0.9rem;margin-bottom:2rem;max-width:640px;}
+
+.thread-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:1rem;
+  margin-bottom:2rem;
+}
+@media (max-width:760px){.thread-grid{grid-template-columns:1fr;}}
+.thread{
+  border-radius:6px;
+  padding:1.2rem 1.3rem;
+  font-size:0.85rem;
+}
+.thread.t1{background:var(--indigo-soft);border:1px solid #c7d2e0;}
+.thread.t2{background:var(--terracotta-soft);border:1px solid #e3c6b5;}
+.thread.t3{background:var(--sage-soft);border:1px solid #c9d9c6;}
+.thread .t-title{font-family:'Noto Serif JP',serif;font-weight:600;font-size:0.95rem;margin-bottom:0.5rem;color:var(--ink);}
+.thread p{color:var(--ink-soft);}
+
+/* Open questions */
+.open-q{
+  background:var(--paper2);
+  border:1px dashed var(--line);
+  border-radius:6px;
+  padding:1.5rem 1.7rem;
+}
+.open-q h3{
+  font-family:'Shippori Mincho',serif;
+  font-size:1.1rem;
+  margin-bottom:0.9rem;
+  color:var(--gold);
+}
+.open-q ol{padding-left:1.3rem;}
+.open-q li{
+  font-size:0.9rem;
+  color:var(--ink-soft);
+  margin-bottom:0.7rem;
+  padding-left:0.2rem;
+}
+.open-q li::marker{
+  font-family:'JetBrains Mono',monospace;
+  color:var(--gold);
+  font-weight:600;
+}
+
+/* Footer */
+.footer{
+  margin-top:2rem;
+  padding-top:1.5rem;
+  border-top:1px solid var(--line);
+  font-family:'JetBrains Mono',monospace;
+  font-size:0.7rem;
+  color:var(--ink-faint);
+  text-align:center;
+}
+
+@media (prefers-reduced-motion:no-preference){
+  .rbranch-a,.rbranch-b,.rbranch-c,.rtrunk{
+    stroke-dasharray:400;
+    stroke-dashoffset:400;
+    animation:draw 1.6s ease forwards;
+  }
+  .rbranch-b{animation-delay:0.25s;}
+  .rbranch-c{animation-delay:0.5s;}
+}
+@keyframes draw{to{stroke-dashoffset:0;}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-eyebrow">Self-Analysis Synthesis / 2026.07</div>
+    <h1>根っこと、<span>今立っている場所</span>のマップ</h1>
+    <p class="hero-desc">
+      複数回のセッションで掘り下げてきた「動機の根っこ」「主体性の再定義」「お金と経験への欲求」——
+      3つの糸を1枚にまとめ、それぞれがどう繋がっているかを俯瞰する。
+    </p>
+    <div class="hero-meta">
+      <span class="meta-chip">ROOT 01 ― 劣等感と後悔</span>
+      <span class="meta-chip">ROOT 02 ― 苦労の設計者</span>
+      <span class="meta-chip">ROOT 03 ― 経験としてのお金</span>
+    </div>
+  </section>
+
+  <!-- ROOT DIAGRAM -->
+  <section class="root-section">
+    <h2>全体構造</h2>
+    <p class="root-caption">1本の幹（コンフォートゾーンへの拒絶）から、3つの根が別々の場面で発見されてきた。今のところ独立して検証してきたが、根本ではどう繋がっているかは未検証。</p>
+    <div class="root-svg-wrap">
+      <svg viewBox="0 0 860 340" width="860" height="340" xmlns="http://www.w3.org/2000/svg">
+        <!-- trunk -->
+        <path class="rtrunk" d="M 430 300 L 430 220" />
+        <circle class="rnode" cx="430" cy="300" r="5" fill="var(--ink)" stroke="var(--paper)"/>
+        <text x="430" y="325" text-anchor="middle" class="rlabel" font-weight="600">現在の行動エンジン</text>
+
+        <!-- branch A: indigo -->
+        <path class="rbranch-a" d="M 430 220 C 430 190, 200 190, 170 120" />
+        <circle class="rnode" cx="170" cy="120" r="5" fill="var(--indigo)" stroke="var(--paper)"/>
+        <text x="170" y="95" text-anchor="middle" class="rlabel" fill="var(--indigo)" font-weight="600">劣等感 / 後悔への恐怖</text>
+        <text x="170" y="112" text-anchor="middle" class="rlabel-sub">回避動機・行動エンジンの土台</text>
+
+        <!-- branch B: terracotta -->
+        <path class="rbranch-b" d="M 430 220 C 430 170, 430 170, 430 90" />
+        <circle class="rnode" cx="430" cy="90" r="5" fill="var(--terracotta)" stroke="var(--paper)"/>
+        <text x="430" y="65" text-anchor="middle" class="rlabel" fill="var(--terracotta)" font-weight="600">苦労の設計者でいたい</text>
+        <text x="430" y="82" text-anchor="middle" class="rlabel-sub">建築→IT転向・TOEIC直談判の核</text>
+
+        <!-- branch C: sage -->
+        <path class="rbranch-c" d="M 430 220 C 430 190, 660 190, 690 120" />
+        <circle class="rnode" cx="690" cy="120" r="5" fill="var(--sage)" stroke="var(--paper)"/>
+        <text x="690" y="95" text-anchor="middle" class="rlabel" fill="var(--sage)" font-weight="600">経験としてのお金</text>
+        <text x="690" y="112" text-anchor="middle" class="rlabel-sub">未踏の地への到達欲求</text>
+      </svg>
+    </div>
+  </section>
+
+  <!-- CHAPTER 1: 劣等感と後悔 -->
+  <section class="chapter acc-indigo">
+    <div class="chapter-head">
+      <span class="chapter-num">ROOT 01</span>
+      <span class="chapter-title">劣等感と後悔への恐怖</span>
+    </div>
+    <p class="chapter-sub">行動エンジンそのものの土台。中学時代の学力比較から始まり、父親の姿が「なりたくない未来」の具体像として機能してきた。</p>
+
+    <div class="card-row">
+      <div class="card">
+        <div class="card-label">事実</div>
+        <ul>
+          <li>中学の同級生に学力の高い人が多く、工業高校進学で「受験する」が少数派に</li>
+          <li>父親（中卒）の学歴・収入・態度が「勉強しなかった未来」の実像として見えていた</li>
+          <li>「暖かくてぬるいコンフォートゾーン」への拒絶感を繰り返し言語化している</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-label">解釈（仮説）</div>
+        <ul>
+          <li>「あいつらより劣っている」という感情が受験への行動力に転化した</li>
+          <li>「絶対こうなりたくない」という最悪像が鮮明であるほどエンジンは強く回る</li>
+          <li>回避型動機は短期的に強いが、長期的な持続性は未検証</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="quote">
+      暖かくてぬるい、コンフォートゾーンに浸ったままでいいのか。アグレッシブな人生の方がワクワクする気持ちもある。
+      <cite>— 令和7年11月24日 ジャーナルより</cite>
+    </div>
+
+    <div class="core-box">
+      <div class="label">見えていた死角</div>
+      <p>父親を「勉強しなかった結果の人間」という一本の線で見ていたが、「中卒で家族を養い続けた」という重さには気づいていなかった。この視点の更新は、本人にとって意外なものだった。</p>
+    </div>
+  </section>
+
+  <!-- CHAPTER 2: 苦労の設計者 -->
+  <section class="chapter acc-terracotta">
+    <div class="chapter-head">
+      <span class="chapter-num">ROOT 02</span>
+      <span class="chapter-title">苦労の設計者でいたい</span>
+    </div>
+    <p class="chapter-sub">建築→IT転向、TOEICクラスへの直談判、英語コミュニティでの環境構築——3つの別々の出来事が同じ価値観に収束する。</p>
+
+    <div class="compare">
+      <div class="col neg">
+        <h4>建設現場で見えたもの</h4>
+        <ul>
+          <li>環境そのものを選べず、与えられた条件に耐えるしかない構造</li>
+          <li>板挟みで自分の意見を言いにくい立場</li>
+          <li>→ 苦労の設計者になれない</li>
+        </ul>
+      </div>
+      <div class="col pos">
+        <h4>自分が取ってきた行動</h4>
+        <ul>
+          <li>TOEICクラスへ自ら課に直談判し編入を勝ち取った</li>
+          <li>語学コミュニティ参加→対面→旅行と段階的に負荷を上げた</li>
+          <li>→ 苦労を自分で設計・獲得しに行っている</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="steps">
+      <div class="step"><b>STEP1</b> 自ら環境を選ぶ・作りに行く</div>
+      <span class="step-arrow">→</span>
+      <div class="step"><b>STEP2</b> そこに投資が生まれる</div>
+      <span class="step-arrow">→</span>
+      <div class="step"><b>STEP3</b> 投資量に比例して責任感</div>
+      <span class="step-arrow">→</span>
+      <div class="step"><b>STEP4</b> 苦労が苦労と感じにくくなる</div>
+    </div>
+
+    <div class="core-box terracotta">
+      <div class="label">CORE VALUE</div>
+      <p>主体性とは、意見を言うことではなく「自分が苦労する環境そのものを設計・獲得すること」。この価値観が建築士という職業選択より上位に置かれていた。</p>
+    </div>
+  </section>
+
+  <!-- CHAPTER 3: 経験としてのお金（今日のセッション） -->
+  <section class="chapter acc-sage">
+    <div class="chapter-head">
+      <span class="chapter-num">ROOT 03 ・ 今日のセッション</span>
+      <span class="chapter-title">経験としてのお金</span>
+    </div>
+    <p class="chapter-sub">「もの」ではなく「経験」にお金を使いたいという欲求の原点を、小中学時代の探索行動まで遡った。</p>
+
+    <div class="dq-row">
+      <span class="dq-pill">ドラクエのルーラ</span>
+      <span class="dq-arrow">→</span>
+      <span class="dq-pill">未踏の地への到達プロセス自体が報酬</span>
+      <span class="dq-arrow">→</span>
+      <span class="dq-pill hi">自転車で川の上流・廃村・お城へ</span>
+      <span class="dq-arrow">→</span>
+      <span class="dq-pill hi">海外への渡航・留学欲求</span>
+    </div>
+
+    <div class="card-row">
+      <div class="card">
+        <div class="card-label">諦めたケース</div>
+        <ul>
+          <li>大学1回生・国際ボランティアの説明会で「渡航は自腹」と知り断念</li>
+          <li>海外留学も資金を稼ぎきれず実現せず</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-label">代替策を見つけたケース</div>
+        <ul>
+          <li>Discord語学交流→対面→国内旅行で「海外の友達と話したい」という目的を達成</li>
+          <li>工夫（写真を見せる・他の表現で補う）でお金の壁を越えた</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="quote">
+      幸せはお金では買えない。でも幸せを得る機会は買えると思う。人と会う機会はお金で買えるから。
+      <cite>— 2026.07.07 セッションより</cite>
+    </div>
+
+    <div class="core-box sage">
+      <div class="label">分かれ目の言語化</div>
+      <p>「手段よりも目的の達成を優先した」ことが分かれ目だった。お金への欲求の強さは、目的達成に他の手段がないと感じる場面でだけ強く立ち上がる——という条件的な構造が見えてきた。</p>
+    </div>
+  </section>
+
+  <!-- SYNTHESIS -->
+  <section class="synthesis">
+    <h2>3つの根はどう繋がっているか</h2>
+    <p class="sub">まだ完全には接続されていないが、現時点で見えている仮の繋がり方。</p>
+
+    <div class="thread-grid">
+      <div class="thread t1">
+        <div class="t-title">ROOT 01 が土台</div>
+        <p>「後悔したくない」「あの人生にはなりたくない」という回避動機が、そもそも行動する理由・エネルギー源になっている。</p>
+      </div>
+      <div class="thread t2">
+        <div class="t-title">ROOT 02 が方法論</div>
+        <p>そのエネルギーをどう使うか＝「苦労する環境を自分で設計する」という一貫した行動パターンとして表れる。</p>
+      </div>
+      <div class="thread t3">
+        <div class="t-title">ROOT 03 が方向</div>
+        <p>設計した苦労の先で、何を得たいのか＝「未知の経験・文化」という具体的な行き先を示している。</p>
+      </div>
+    </div>
+
+    <div class="open-q">
+      <h3>未消化の問い ― 次回の入口</h3>
+      <ol>
+        <li>「代替策が効く（国内旅行）／効かない（渡航・留学）」と感じる基準は本人の中で何によって決まっているのか。「お金がないと無理」という思い込み自体を崩せる余地はあるか。</li>
+        <li>『ジェダイの哲学』を再読した上で、「海外の文化を実際に経験したい」という核がどこから来ているのか、もう一段深掘りする。</li>
+        <li>「苦労の設計者でありたい」という価値観は、いつ・何がきっかけで形成されたのか。高校の内職経験が原点か、更に幼少期に遡るのか。</li>
+        <li>回避動機（後悔したくない）から接近動機（本当に向かいたいもの）へのシフトは、今の3つの根の中でどう位置づけられるか。</li>
+      </ol>
+    </div>
+  </section>
+
+  <div class="footer">自己分析ノート — 2026.07.07 セッションまでの内容を統合 / ローカル保存用</div>
+
+</div>
+
+</body>
+</html>

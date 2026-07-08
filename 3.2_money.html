@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>お金への欲求の正体 ― 経験としてのお金</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700&family=Noto+Serif+JP:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+:root{
+  --paper:#f4f0e6;
+  --paper2:#ece5d4;
+  --ink:#2a2722;
+  --ink-soft:#5c574d;
+  --ink-faint:#8c8574;
+  --line:#c9bfa8;
+  --sage:#5f7a5e;
+  --sage-soft:#e6ede2;
+  --terracotta:#b8683f;
+  --terracotta-soft:#f4e6dc;
+  --indigo:#3d4f6b;
+  --indigo-soft:#e4e9f0;
+  --gold:#a9832f;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{
+  background:var(--paper);
+  background-image:
+    radial-gradient(circle at 10% 5%, rgba(95,122,94,0.05), transparent 40%),
+    radial-gradient(circle at 92% 70%, rgba(184,104,63,0.05), transparent 45%);
+  color:var(--ink);
+  font-family:'Noto Sans JP',sans-serif;
+  line-height:1.85;
+  padding:0 0 6rem;
+}
+.wrap{max-width:900px;margin:0 auto;padding:0 1.75rem;}
+
+/* HERO */
+.hero{padding:4rem 0 2.5rem;border-bottom:1px solid var(--line);}
+.eyebrow{
+  font-family:'JetBrains Mono',monospace;font-size:0.72rem;letter-spacing:0.14em;
+  color:var(--ink-faint);text-transform:uppercase;margin-bottom:1rem;
+}
+.hero h1{
+  font-family:'Shippori Mincho',serif;font-weight:700;font-size:2.3rem;
+  line-height:1.5;color:var(--ink);
+}
+.hero h1 span{color:var(--sage);}
+.hero p{margin-top:1rem;max-width:600px;color:var(--ink-soft);font-size:0.95rem;}
+.hero-meta{display:flex;gap:0.7rem;margin-top:1.6rem;flex-wrap:wrap;}
+.chip{
+  font-family:'JetBrains Mono',monospace;font-size:0.72rem;color:var(--ink-soft);
+  border:1px solid var(--line);border-radius:20px;padding:5px 14px;background:var(--paper2);
+}
+
+/* MAP ROUTE (signature element) */
+.route-section{padding:3rem 0 2.5rem;border-bottom:1px solid var(--line);}
+.route-section h2{font-family:'Shippori Mincho',serif;font-size:1.25rem;margin-bottom:0.4rem;}
+.route-caption{font-size:0.85rem;color:var(--ink-soft);margin-bottom:1.6rem;max-width:600px;}
+.route-svg-wrap{width:100%;overflow-x:auto;}
+.route-svg-wrap svg{display:block;margin:0 auto;}
+.rlabel{font-family:'Noto Serif JP',serif;font-size:12.5px;fill:var(--ink);}
+.rsub{font-family:'JetBrains Mono',monospace;font-size:9px;fill:var(--ink-faint);}
+.rpath{stroke-width:2;fill:none;stroke-linecap:round;stroke-dasharray:6 5;}
+
+/* CHAPTERS */
+.chapter{padding:3rem 0;border-bottom:1px solid var(--line);}
+.chapter:last-of-type{border-bottom:none;}
+.chapter-head{display:flex;align-items:baseline;gap:12px;margin-bottom:0.6rem;}
+.chapter-num{font-family:'JetBrains Mono',monospace;font-size:0.78rem;color:var(--ink-faint);}
+.chapter-title{font-family:'Shippori Mincho',serif;font-weight:700;font-size:1.4rem;}
+.chapter-sub{color:var(--ink-soft);font-size:0.88rem;max-width:620px;margin-bottom:1.6rem;}
+
+.acc-sage .chapter-title{color:var(--sage);}
+.acc-terracotta .chapter-title{color:var(--terracotta);}
+.acc-indigo .chapter-title{color:var(--indigo);}
+.acc-gold .chapter-title{color:var(--gold);}
+
+ul.fact-list{padding-left:1.2rem;font-size:0.9rem;color:var(--ink-soft);}
+ul.fact-list li{margin-bottom:0.55rem;}
+ul.fact-list li b{color:var(--ink);font-weight:600;}
+
+.quote{
+  border-left:3px solid var(--ink-faint);padding:0.3rem 0 0.3rem 1.2rem;margin:1.4rem 0;
+  font-family:'Noto Serif JP',serif;font-size:0.95rem;color:var(--ink);
+}
+.quote cite{
+  display:block;margin-top:0.35rem;font-family:'JetBrains Mono',monospace;
+  font-size:0.68rem;color:var(--ink-faint);font-style:normal;
+}
+
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:1.4rem 0;}
+@media (max-width:680px){.compare{grid-template-columns:1fr;}}
+.compare .col{padding:1.1rem 1.3rem;border-radius:6px;font-size:0.86rem;}
+.compare .col.neg{background:var(--terracotta-soft);border:1px solid #e3c6b5;}
+.compare .col.pos{background:var(--sage-soft);border:1px solid #c9d9c6;}
+.compare .col h4{font-family:'Noto Serif JP',serif;font-size:0.9rem;margin-bottom:0.6rem;color:var(--ink);}
+.compare .col ul{padding-left:1.1rem;color:var(--ink-soft);}
+.compare .col li{margin-bottom:0.35rem;}
+
+.core-box{
+  border-radius:6px;padding:1.3rem 1.5rem;margin:1.5rem 0;
+  background:var(--sage-soft);border:1px solid #c9d9c6;
+}
+.core-box .label{
+  font-family:'JetBrains Mono',monospace;font-size:0.68rem;letter-spacing:0.08em;
+  text-transform:uppercase;color:var(--ink-faint);margin-bottom:0.5rem;
+}
+.core-box p{font-family:'Noto Serif JP',serif;font-size:1rem;line-height:1.75;color:var(--ink);}
+
+/* Use case cards */
+.usecase-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1.2rem;}
+@media (max-width:680px){.usecase-grid{grid-template-columns:1fr;}}
+.usecase{background:var(--paper2);border:1px solid var(--line);border-radius:6px;padding:1.1rem 1.3rem;}
+.usecase .u-label{
+  font-family:'JetBrains Mono',monospace;font-size:0.68rem;letter-spacing:0.06em;
+  text-transform:uppercase;color:var(--ink-faint);margin-bottom:0.5rem;
+}
+.usecase p{font-size:0.87rem;color:var(--ink-soft);}
+.usecase .q-tag{
+  display:inline-block;background:var(--paper);border:1px solid var(--line);
+  border-radius:14px;padding:2px 10px;font-size:0.76rem;color:var(--ink-soft);
+  margin:3px 4px 0 0;
+}
+
+/* Open questions */
+.open-q{background:var(--paper2);border:1px dashed var(--line);border-radius:6px;padding:1.5rem 1.7rem;}
+.open-q h3{font-family:'Shippori Mincho',serif;font-size:1.05rem;margin-bottom:0.9rem;color:var(--gold);}
+.open-q ol{padding-left:1.3rem;}
+.open-q li{font-size:0.89rem;color:var(--ink-soft);margin-bottom:0.6rem;}
+.open-q li::marker{font-family:'JetBrains Mono',monospace;color:var(--gold);font-weight:600;}
+
+.footer{
+  margin-top:2rem;padding-top:1.5rem;border-top:1px solid var(--line);
+  font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:var(--ink-faint);text-align:center;
+}
+
+@media (prefers-reduced-motion:no-preference){
+  .rpath{stroke-dashoffset:1;animation:dash 22s linear infinite;}
+}
+@keyframes dash{to{stroke-dashoffset:-500;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="eyebrow">Self-Analysis Session / 2026.07.07</div>
+    <h1>お金への欲求の正体 ― <span>経験としてのお金</span></h1>
+    <p>「ものが欲しい」ではなく「経験にお金を使いたい」という感覚を、ドラクエのルーラ、小中学時代の自転車探索、大学時代の渡航断念とDiscord旅行まで遡って掘り下げたセッションの記録。</p>
+    <div class="hero-meta">
+      <span class="chip">経験 &gt; もの</span>
+      <span class="chip">ドラクエのルーラ</span>
+      <span class="chip">手段より目的</span>
+    </div>
+  </section>
+
+  <!-- ROUTE MAP -->
+  <section class="route-section">
+    <h2>欲求のルート</h2>
+    <p class="route-caption">まさにドラクエのマップのように、一度「発見」した地点を繋いでいくと、今の欲求までの道のりが見えてくる。</p>
+    <div class="route-svg-wrap">
+      <svg viewBox="0 0 900 200" width="900" height="200" xmlns="http://www.w3.org/2000/svg">
+        <path class="rpath" stroke="var(--ink-faint)" d="M 60 150 L 840 150"/>
+        <!-- waypoint 1 -->
+        <circle cx="60" cy="150" r="6" fill="var(--sage)"/>
+        <text x="60" y="120" text-anchor="middle" class="rlabel" fill="var(--sage)">ドラクエのルーラ</text>
+        <text x="60" y="135" text-anchor="middle" class="rsub">未踏の地への到達＝報酬</text>
+        <!-- waypoint 2 -->
+        <circle cx="280" cy="150" r="6" fill="var(--sage)"/>
+        <text x="280" y="120" text-anchor="middle" class="rlabel" fill="var(--sage)">自転車で遠出</text>
+        <text x="280" y="135" text-anchor="middle" class="rsub">小中学・川/廃村/お城へ</text>
+        <!-- waypoint 3 -->
+        <circle cx="500" cy="150" r="6" fill="var(--terracotta)"/>
+        <text x="500" y="120" text-anchor="middle" class="rlabel" fill="var(--terracotta)">渡航断念</text>
+        <text x="500" y="135" text-anchor="middle" class="rsub">国際ボランティア・留学</text>
+        <!-- waypoint 4 -->
+        <circle cx="680" cy="150" r="6" fill="var(--indigo)"/>
+        <text x="680" y="120" text-anchor="middle" class="rlabel" fill="var(--indigo)">Discord代替策</text>
+        <text x="680" y="135" text-anchor="middle" class="rsub">国内旅行で目的達成</text>
+        <!-- waypoint 5 -->
+        <circle cx="840" cy="150" r="7" fill="var(--gold)"/>
+        <text x="840" y="120" text-anchor="middle" class="rlabel" fill="var(--gold)" font-weight="700">今の海外志向</text>
+        <text x="840" y="135" text-anchor="middle" class="rsub">経験にお金を使いたい</text>
+      </svg>
+    </div>
+  </section>
+
+  <!-- 事実 -->
+  <section class="chapter acc-sage">
+    <div class="chapter-head">
+      <span class="chapter-num">01</span>
+      <span class="chapter-title">事実</span>
+    </div>
+    <ul class="fact-list">
+      <li>一般的な「お金持ちになりたい＝ものが欲しい」ではなく、対象は一貫して<b>「経験」</b>（知らない場所、出会う人、ハプニング）</li>
+      <li>小中学生時代、自転車で20〜30km先の川の上流、滝、山、廃村、お城、お寺などへ1人でも友達とでも思い立ったらすぐ行っていた。交通費節約でバッティングセンターまで自転車で行ったこともある</li>
+      <li>これらの行き先は「自然が溢れてる」「人があまり足を踏み入れてなさそうな」場所が多かった</li>
+      <li>ドラクエのルーラ（一度行った場所にしか使えない）システムが好きで、知らない土地への到達プロセスと道中のイベント（村人との会話、宝箱探し）自体を楽しんでいた</li>
+      <li>大学1回生時、国際ボランティアサークルの説明会で「渡航は自腹」と知り、理系・部活・バイト・資格勉強との兼ね合いで金銭的・時間的に無理だと判断し断念</li>
+      <li>海外留学も同様に、十分な資金を稼げず実現しなかった</li>
+      <li>一方、同時期のDiscord語学交流→対面→国内旅行は、お金をかけない代替策（工夫・関係構築）で「海外の友達と喋りたい」という目的を達成できた</li>
+    </ul>
+  </section>
+
+  <!-- 本人の解釈 -->
+  <section class="chapter acc-terracotta">
+    <div class="chapter-head">
+      <span class="chapter-num">02</span>
+      <span class="chapter-title">本人の解釈</span>
+    </div>
+
+    <div class="quote">
+      幸せはお金で買えないが、幸せを得る機会は買える。
+      <cite>— 本人の持論</cite>
+    </div>
+
+    <ul class="fact-list">
+      <li>お金は目的ではなく手段。可能性・機会を広げるものとして位置づけている</li>
+      <li>諦めたもの（留学・国際ボランティア）と代替策を見つけたもの（国内旅行）の分かれ目は、<b>「手段そのものより目的（真に欲しかったもの）を優先したかどうか」</b></li>
+      <li>「海外で働きたい・お金を稼ぎたい」という現在の欲求も、目的（文化を実際に経験したい）達成のために"今は"他に手段がないと感じているから強く出ている、という自覚</li>
+      <li>ただし振り返る中で、奨学金・プログラム・招待など、お金以外のルートもあり得ると気づいた</li>
+    </ul>
+
+    <div class="compare">
+      <div class="col neg">
+        <h4>諦めたケース</h4>
+        <ul>
+          <li>国際ボランティア説明会で「渡航は自腹」と判明</li>
+          <li>理系の勉強・部活・バイトと両立できず断念</li>
+          <li>海外留学も資金不足で実現せず</li>
+        </ul>
+      </div>
+      <div class="col pos">
+        <h4>代替策を見つけたケース</h4>
+        <ul>
+          <li>Discord語学交流→対面→国内旅行</li>
+          <li>「海外の友達と話したい」目的を工夫で達成</li>
+          <li>手段ではなく目的を優先した結果</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 抽出された価値観 -->
+  <section class="chapter acc-indigo">
+    <div class="chapter-head">
+      <span class="chapter-num">03</span>
+      <span class="chapter-title">抽出された価値観・行動特性（仮説）</span>
+    </div>
+
+    <div class="core-box">
+      <div class="label">仮説 1</div>
+      <p>「経験にお金を使いたい」の原点は、小中学時代の自転車での探索行動およびドラクエ的な「未踏の地への到達プロセスそのものを楽しむ」感覚にあると考えられる。</p>
+    </div>
+
+    <div class="core-box" style="background:var(--indigo-soft);border-color:#c7d2e0;">
+      <div class="label">仮説 2</div>
+      <p>お金への欲求は目的達成のための最終手段としてのみ強く立ち上がり、代替手段（工夫・関係構築・プログラム活用）が見えているときは弱まる、という条件的な構造を持っている可能性がある。</p>
+    </div>
+  </section>
+
+  <!-- 就活での使いどころ -->
+  <section class="chapter acc-gold">
+    <div class="chapter-head">
+      <span class="chapter-num">04</span>
+      <span class="chapter-title">就活での使いどころ</span>
+    </div>
+
+    <div class="usecase-grid">
+      <div class="usecase">
+        <div class="u-label">向いている設問</div>
+        <p>
+          <span class="q-tag">あなたの価値観を形作った経験</span>
+          <span class="q-tag">なぜ海外志向なのか</span>
+          <span class="q-tag">金銭的制約をどう乗り越えたか</span>
+        </p>
+      </div>
+      <div class="usecase">
+        <div class="u-label">使うときの注意</div>
+        <p>「経験にお金を使いたい」だけだと抽象的なので、ドラクエ→自転車探検→Discord旅行という具体行動の連続性で語ると説得力が増す。ただし「お金がなくて諦めた」ネガティブな面だけで終わらせず、そこから代替策を見出した行動力とセットで語るのが良い。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 未消化の問い -->
+  <section class="chapter" style="border-bottom:none;padding-bottom:0;">
+    <div class="chapter-head">
+      <span class="chapter-num">05</span>
+      <span class="chapter-title">未消化の問い（次回の入口）</span>
+    </div>
+    <div class="open-q">
+      <ol>
+        <li>「代替策が効く／効かない」を分けている本人内の基準の正体</li>
+        <li>『ジェダイの哲学』を再読した上で、「海外の文化を経験したい」という目的の核がどこから来ているのか、より深く言語化する</li>
+      </ol>
+    </div>
+  </section>
+
+  <div class="footer">自己分析ノート — 2026.07.07 セッション ／ ローカル保存用</div>
+
+</div>
+</body>
+</html>

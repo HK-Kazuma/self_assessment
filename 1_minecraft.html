@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>何もないところから、形にしていく ― マイクラ深掘りノート</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Zen+Antique&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #eef1e2;
+    --surface: #f8f9ef;
+    --surface-alt: #e5e8d4;
+    --ink: #262a1e;
+    --ink-soft: #5c6250;
+    --ink-faint: #8d927e;
+    --line: rgba(38,42,30,0.14);
+    --line-strong: rgba(38,42,30,0.3);
+
+    --earth: #8a5a2b;
+    --earth-bg: rgba(138,90,43,0.09);
+    --grass: #566e38;
+    --grass-bg: rgba(86,110,56,0.09);
+    --ore: #b4791f;
+    --ore-bg: rgba(180,121,31,0.12);
+    --stone: #656b5e;
+    --stone-bg: rgba(101,107,94,0.09);
+
+    --display: 'Zen Antique', serif;
+    --body: 'Zen Kaku Gothic New', sans-serif;
+    --mono: 'JetBrains Mono', monospace;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--body);
+    line-height: 1.85;
+    font-size: 16px;
+    padding: 0 0 80px;
+  }
+
+  /* subtle block-grid texture on the page background */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+      linear-gradient(var(--line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size: 42px 42px;
+    opacity: 0.35;
+    z-index: 0;
+  }
+
+  .wrap { max-width: 760px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
+
+  /* ===== HERO ===== */
+  header.hero {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 56px 24px 40px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .file-label {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    color: var(--ink-faint);
+    text-transform: uppercase;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 18px;
+  }
+  .file-label .dot { width: 6px; height: 6px; background: var(--grass); border-radius: 1px; }
+
+  h1.q {
+    font-family: var(--display);
+    font-size: clamp(1.7rem, 4vw, 2.5rem);
+    line-height: 1.5;
+    font-weight: 400;
+    color: var(--ink);
+    max-width: 680px;
+  }
+
+  .thesis {
+    margin-top: 22px;
+    font-size: 1.05rem;
+    color: var(--ink-soft);
+    max-width: 560px;
+    border-left: 3px solid var(--ore);
+    padding-left: 16px;
+  }
+
+  .stamp-row { margin-top: 24px; display: flex; gap: 10px; flex-wrap: wrap; }
+  .stamp {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.06em;
+    padding: 4px 10px;
+    border-radius: 2px;
+    display: inline-block;
+  }
+  .stamp-before { background: var(--stone-bg); color: var(--stone); border: 1px solid rgba(101,107,94,0.35); }
+  .stamp-after { background: var(--grass-bg); color: var(--grass); border: 1px solid rgba(86,110,56,0.4); }
+
+  /* ===== STRATA BAR (signature element) ===== */
+  .strata {
+    margin: 44px auto 8px;
+    max-width: 900px;
+  }
+  .strata-label {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--ink-faint);
+    letter-spacing: 0.08em;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+  }
+  .strata-bar {
+    display: flex;
+    width: 100%;
+    height: 84px;
+    border-radius: 3px;
+    overflow: hidden;
+    border: 1px solid var(--line-strong);
+  }
+  .strata-seg {
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    padding: 10px 12px;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.10) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.10) 1px, transparent 1px);
+    background-size: 14px 14px;
+  }
+  .strata-seg span {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    color: rgba(255,255,255,0.92);
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+  }
+  .seg-1 { flex: 10; background-color: #9a9587; }
+  .seg-2 { flex: 20; background-color: var(--earth); }
+  .seg-3 { flex: 30; background-color: #6d7a4a; }
+  .seg-4 { flex: 40; background-color: var(--ore); }
+  .strata-note {
+    margin-top: 10px;
+    font-size: 0.85rem;
+    color: var(--ink-faint);
+    font-family: var(--mono);
+  }
+
+  /* ===== SECTIONS ===== */
+  main { margin-top: 8px; }
+
+  section.block {
+    padding: 46px 0;
+    border-top: 1px solid var(--line);
+  }
+
+  .sec-head {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .sec-num {
+    font-family: var(--mono);
+    font-size: 0.85rem;
+    color: var(--ink-faint);
+  }
+  .sec-title {
+    font-family: var(--display);
+    font-size: 1.4rem;
+    font-weight: 400;
+    color: var(--ink);
+  }
+
+  /* facts timeline */
+  .timeline { position: relative; padding-left: 22px; }
+  .timeline::before {
+    content: "";
+    position: absolute;
+    left: 5px; top: 4px; bottom: 4px;
+    width: 2px;
+    background: repeating-linear-gradient(to bottom, var(--earth) 0 4px, transparent 4px 8px);
+  }
+  .t-item {
+    position: relative;
+    padding-bottom: 18px;
+    font-size: 0.98rem;
+  }
+  .t-item:last-child { padding-bottom: 0; }
+  .t-item::before {
+    content: "";
+    position: absolute;
+    left: -22px; top: 7px;
+    width: 9px; height: 9px;
+    background: var(--surface);
+    border: 2px solid var(--earth);
+    border-radius: 1px;
+  }
+  .t-item b { color: var(--ink); font-weight: 700; }
+
+  /* interpretation quotes */
+  .quote {
+    background: var(--grass-bg);
+    border-left: 3px solid var(--grass);
+    padding: 16px 18px;
+    border-radius: 0 4px 4px 0;
+    margin-bottom: 14px;
+    font-size: 0.98rem;
+    color: var(--ink);
+  }
+  .quote:last-child { margin-bottom: 0; }
+
+  /* hypothesis box */
+  .hypo-box {
+    background: var(--ore-bg);
+    border: 1px solid rgba(180,121,31,0.3);
+    border-radius: 6px;
+    padding: 24px 26px;
+    margin-bottom: 18px;
+  }
+  .hypo-box .hypo-tag {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    color: var(--ore);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    display: block;
+  }
+  .hypo-box p { font-size: 1rem; }
+  .hypo-box p + p { margin-top: 10px; }
+
+  .fork {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 20px;
+  }
+  .fork-col {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 16px 18px;
+  }
+  .fork-col h4 {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+    color: var(--ink-faint);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .fork-col p { font-size: 0.92rem; color: var(--ink-soft); }
+  @media (max-width: 560px) { .fork { grid-template-columns: 1fr; } }
+
+  /* job-hunting use */
+  .use-grid { display: grid; gap: 14px; }
+  .use-item {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: 14px;
+    font-size: 0.95rem;
+    align-items: start;
+  }
+  .use-item .use-label {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--stone);
+    letter-spacing: 0.04em;
+    padding-top: 3px;
+  }
+  @media (max-width: 560px) {
+    .use-item { grid-template-columns: 1fr; gap: 4px; }
+  }
+
+  /* open questions */
+  .open-list { list-style: none; }
+  .open-item {
+    border: 1px dashed var(--line-strong);
+    border-radius: 6px;
+    padding: 14px 18px;
+    margin-bottom: 12px;
+    font-size: 0.95rem;
+    color: var(--ink-soft);
+    position: relative;
+    padding-left: 40px;
+  }
+  .open-item::before {
+    content: "?";
+    position: absolute;
+    left: 14px; top: 12px;
+    font-family: var(--display);
+    color: var(--stone);
+    font-size: 1.1rem;
+  }
+  .open-item:last-child { margin-bottom: 0; }
+
+  footer {
+    max-width: 900px;
+    margin: 40px auto 0;
+    padding: 24px 24px 0;
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--ink-faint);
+    border-top: 1px solid var(--line);
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  @media (max-width: 560px) {
+    header.hero, .strata, footer { padding-left: 20px; padding-right: 20px; }
+    .wrap { padding: 0 20px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="file-label"><span class="dot"></span>SELF-ANALYSIS FILE 01 ／ 更新版 ・ 2026.07.08</div>
+  <h1 class="q">マイクラの何にはまっていたの？何が楽しかったの？</h1>
+  <p class="thesis">小6、友達がやっているのを見て始めたマインクラフト。掘っていくと出てきたのは「苦労の設計者」とはまた別の、もっと古い欲求だった。</p>
+  <div class="stamp-row">
+    <span class="stamp stamp-before">Before：検証中</span>
+    <span class="stamp stamp-after">After：一部解明 → 新しい問いが発生</span>
+  </div>
+
+  <div class="strata">
+    <div class="strata-label">建築の工程 ― どこに時間をかけていたか</div>
+    <div class="strata-bar">
+      <div class="strata-seg seg-1"><span>整地</span></div>
+      <div class="strata-seg seg-2"><span>資材集め</span></div>
+      <div class="strata-seg seg-3"><span>建築</span></div>
+      <div class="strata-seg seg-4"><span>装飾</span></div>
+    </div>
+    <div class="strata-note">→ 装飾にこだわるほど時間を忘れ、理想がどんどん広がっていった</div>
+  </div>
+</header>
+
+<div class="wrap">
+<main>
+
+  <section class="block">
+    <div class="sec-head"><span class="sec-num">01</span><span class="sec-title">事実</span></div>
+    <div class="timeline">
+      <div class="t-item">小6の頃、<b>友達がやっているのを見て</b>「良さそう」と思いMinecraftを開始</div>
+      <div class="t-item">プレイ形態は一人・友達の家・オンライン通信の3パターン</div>
+      <div class="t-item">サバイバル、建築、インフラ整備（村人を使った収穫機・丸石製造機）、冒険（洞窟・ネザー要塞探検）を幅広くプレイ</div>
+      <div class="t-item">現実にある建物（神社・寺・コンビニ・城・図書館・学校・道路・信号機）の再現が好きだった</div>
+      <div class="t-item">建築の工程（整地→資材集め→建築→<b>装飾</b>）のうち、一番時間をかけ夢中になったのは<b>装飾</b></div>
+      <div class="t-item">装飾にこだわるほど時間を忘れ、「ここも作りたい」「あれも作りたい」と理想が広がっていく感覚があった</div>
+      <div class="t-item">完成品を友達やネットの友達に見せるワクワクもあったが、<b>誰にも見せなくても同じくらい夢中になれた</b></div>
+      <div class="t-item">小学校〜中学の「秘密基地ごっこ」（竹や木で椅子・パチンコ・発射装置作り）でも同様の感覚があった</div>
+      <div class="t-item">マイクラ内の壁（材料不足・落下死・敵襲撃）は面倒に思いつつ辞めずに対策し、乗り越えると達成感を得ていた</div>
+      <div class="t-item">現在のアプリ開発ではコードのほとんどをAIが書き、「自分の手で徐々に形にするワクワク」より「意思決定者としてどれだけ満足いくものを作れるか」に重心が移った。このシフトはAIの発展に伴うもの</div>
+      <div class="t-item">研究テーマ（LLMによるHPCコード生成・最適化。Tascell／OpenCilkは先行研究がほぼ無い分野）を選んだ理由は「わからないことの方が多い」という感覚に近い</div>
+      <div class="t-item">AIとの壁打ちをHTMLで整理する際、レイアウト自体はAIに任せつつ「視覚的にわかりやすく」「図を使って」等の指示を出すことにこだわりを感じている</div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="sec-head"><span class="sec-num">02</span><span class="sec-title">本人の解釈</span></div>
+    <div class="quote">マイクラで一番好きだったのは、何もないところから徐々に形になっていく過程。特に装飾で理想がどんどん広がっていく感覚が魅力的だった。</div>
+    <div class="quote">完成させること自体に完結した楽しさがあり、他者からの承認は必須ではなかった。</div>
+    <div class="quote">「苦労の設計者」とマイクラの経験は別物。マイクラの苦労（材料不足・敵襲撃など）は自ら求めて選びに行ったものではなく、作りたいものを実現する過程で自然発生したもの。</div>
+    <div class="quote">研究分野選びの「ブルーオーシャンに踏み込む」感覚は、装飾へのこだわりよりも、以前見つかった「未踏の地への冒険欲求」に近い。</div>
+    <div class="quote">現在のHTML整理における「AIへの指示の出し方」を、マイクラの装飾へのこだわりの延長として位置づけている。</div>
+  </section>
+
+  <section class="block">
+    <div class="sec-head"><span class="sec-num">03</span><span class="sec-title">抽出された価値観・行動特性（仮説）</span></div>
+    <div class="hypo-box">
+      <span class="hypo-tag">Hypothesis</span>
+      <p>「苦労の設計者」（ROOT 02）とは独立した、<b>「何もないところから形にしていく・作り込みたい」という欲求</b>が存在する。</p>
+      <p>この欲求は、直接手を動かして作る形（マイクラの装飾、秘密基地作り）から、AIに指示を出し理想を実現する「意思決定者」としての形（アプリ開発、HTML整理）へと、表現方法を変えながら持続している。</p>
+    </div>
+    <div class="fork">
+      <div class="fork-col">
+        <h4>苦労の設計者（既知・ROOT 02）</h4>
+        <p>自ら苦労する環境を選びに行く。TOEICクラス直談判、英語コミュニティでの段階的な環境構築が該当。</p>
+      </div>
+      <div class="fork-col">
+        <h4>作り込みたい欲求（今回・未命名）</h4>
+        <p>作りたいものが先にあり、苦労はその過程で自然発生する。マイクラの装飾、秘密基地作りが該当。</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="sec-head"><span class="sec-num">04</span><span class="sec-title">就活での使いどころ</span></div>
+    <div class="use-grid">
+      <div class="use-item">
+        <span class="use-label">向いている設問</span>
+        <span>「昔から好きだったこと」「物作りへの興味の原点」「AI時代にどう向き合っているか」</span>
+      </div>
+      <div class="use-item">
+        <span class="use-label">使うときの注意</span>
+        <span>「昔からゲームで物を作るのが好きだった」で終わらせない。「作る行為への没頭」から「意思決定者としてのこだわり」への変化として語ると、AI時代の物作りへの向き合い方として説得力が増す。</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="sec-head"><span class="sec-num">05</span><span class="sec-title">未消化の問い（次回の入口）</span></div>
+    <ul class="open-list">
+      <li class="open-item">「作り込みたい欲求」と「未踏の地への冒険欲求（ROOT 03）」は根っこで繋がっているのか、独立した2つの欲求なのか</li>
+      <li class="open-item">「苦労の設計者」という価値観の形成時期は、まだマイクラ以前（幼少期）まで遡れていない。今回見つかった「作りたい欲求」がその形成に関与しているか</li>
+    </ul>
+  </section>
+
+</main>
+</div>
+
+<footer>
+  <span>自己分析ノート — 2026.07.08</span>
+  <span>FILE 01 ／ SELF-ANALYSIS PROJECT</span>
+</footer>
+
+</body>
+</html>

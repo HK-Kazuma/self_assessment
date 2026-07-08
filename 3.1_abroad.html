@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>音から始まった航路 — 英語・海外志向のルーツ</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Zen+Old+Mincho:wght@500;700&family=Noto+Sans+JP:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  :root{
+    --void:#0b0e14;
+    --void2:#12161f;
+    --panel:#161b26;
+    --line:rgba(232,225,210,0.10);
+    --line-strong:rgba(232,225,210,0.22);
+    --ink:#e9e6dd;
+    --ink-dim:#9a9d9;
+    --ink-dim:#9aa0ac;
+    --ink-faint:#5f6673;
+    --signal:#e8a33d;   /* 音・きっかけ */
+    --signal-dim:rgba(232,163,61,0.14);
+    --calm:#4fb3a9;     /* 解釈・核心 */
+    --calm-dim:rgba(79,179,169,0.14);
+    --dark:#7d6bd0;     /* ダークサイド寄りの緊張 */
+    --dark-dim:rgba(125,107,208,0.14);
+    --font-display:'Zen Old Mincho', serif;
+    --font-body:'Noto Sans JP', sans-serif;
+    --font-mono:'JetBrains Mono', monospace;
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:radial-gradient(ellipse at 20% -10%, #1a2130 0%, var(--void) 45%) fixed;
+    color:var(--ink);
+    font-family:var(--font-body);
+    line-height:1.8;
+    -webkit-font-smoothing:antialiased;
+  }
+  body::before{
+    content:'';
+    position:fixed;inset:0;
+    background-image:
+      radial-gradient(1px 1px at 10% 20%, rgba(233,230,221,0.4), transparent),
+      radial-gradient(1px 1px at 80% 15%, rgba(233,230,221,0.3), transparent),
+      radial-gradient(1px 1px at 60% 70%, rgba(233,230,221,0.25), transparent),
+      radial-gradient(1px 1px at 30% 85%, rgba(233,230,221,0.3), transparent),
+      radial-gradient(1px 1px at 90% 60%, rgba(233,230,221,0.2), transparent),
+      radial-gradient(1px 1px at 45% 40%, rgba(233,230,221,0.2), transparent);
+    pointer-events:none;
+    opacity:0.6;
+    z-index:0;
+  }
+
+  .wrap{position:relative;z-index:1;max-width:920px;margin:0 auto;padding:0 1.5rem;}
+
+  /* ── HERO ── */
+  .hero{
+    padding:5.5rem 0 4rem;
+    border-bottom:1px solid var(--line);
+  }
+  .eyebrow{
+    font-family:var(--font-mono);
+    font-size:0.72rem;
+    letter-spacing:0.18em;
+    color:var(--signal);
+    text-transform:uppercase;
+    display:flex;align-items:center;gap:10px;
+    margin-bottom:1.6rem;
+  }
+  .eyebrow::before{
+    content:'';
+    width:22px;height:1px;
+    background:var(--signal);
+  }
+  .hero h1{
+    font-family:var(--font-display);
+    font-weight:700;
+    font-size:clamp(2rem, 5vw, 3.1rem);
+    line-height:1.35;
+    letter-spacing:0.01em;
+    max-width:14ch;
+  }
+  .hero h1 em{
+    font-style:normal;
+    color:var(--signal);
+  }
+  .hero-sub{
+    margin-top:1.6rem;
+    max-width:56ch;
+    color:var(--ink-dim);
+    font-size:0.98rem;
+  }
+  .hero-meta{
+    margin-top:2.4rem;
+    display:flex;gap:2.2rem;flex-wrap:wrap;
+    font-family:var(--font-mono);
+    font-size:0.72rem;
+    color:var(--ink-faint);
+  }
+  .hero-meta b{color:var(--ink);font-weight:500;}
+
+  /* ── SIGNATURE: waveform → orbit ── */
+  .signature{
+    margin-top:3.2rem;
+  }
+  .signature svg{width:100%;height:auto;display:block;}
+  .sig-caption{
+    margin-top:0.9rem;
+    font-family:var(--font-mono);
+    font-size:0.68rem;
+    color:var(--ink-faint);
+    letter-spacing:0.04em;
+    display:flex;justify-content:space-between;
+  }
+
+  /* ── SECTION generic ── */
+  section.block{padding:4rem 0;border-bottom:1px solid var(--line);}
+  section.block:last-of-type{border-bottom:none;}
+  .block-head{
+    display:flex;align-items:baseline;gap:14px;
+    margin-bottom:2.4rem;
+  }
+  .block-index{
+    font-family:var(--font-mono);
+    font-size:0.75rem;
+    color:var(--ink-faint);
+  }
+  .block-title{
+    font-family:var(--font-display);
+    font-size:1.5rem;
+    font-weight:700;
+  }
+  .block-desc{
+    color:var(--ink-dim);
+    font-size:0.9rem;
+    max-width:60ch;
+    margin-bottom:2rem;
+  }
+
+  /* ── TIMELINE (journey) ── */
+  .journey{position:relative;padding-left:2.4rem;}
+  .journey::before{
+    content:'';
+    position:absolute;left:6px;top:6px;bottom:6px;
+    width:1px;
+    background:linear-gradient(to bottom, var(--signal), var(--calm) 60%, var(--dark));
+    opacity:0.5;
+  }
+  .stage{
+    position:relative;
+    padding-bottom:2.6rem;
+  }
+  .stage:last-child{padding-bottom:0;}
+  .stage::before{
+    content:'';
+    position:absolute;left:-2.4rem;top:0.3rem;
+    width:11px;height:11px;
+    border-radius:50%;
+    background:var(--stage-color, var(--signal));
+    box-shadow:0 0 0 4px var(--void), 0 0 14px 1px var(--stage-color, var(--signal));
+  }
+  .stage-period{
+    font-family:var(--font-mono);
+    font-size:0.7rem;
+    color:var(--stage-color, var(--signal));
+    letter-spacing:0.06em;
+    margin-bottom:0.4rem;
+  }
+  .stage h3{
+    font-family:var(--font-body);
+    font-weight:700;
+    font-size:1.05rem;
+    margin-bottom:0.6rem;
+  }
+  .stage p{color:var(--ink-dim);font-size:0.9rem;}
+  .stage-quote{
+    margin-top:0.8rem;
+    padding:0.7rem 1rem;
+    background:var(--stage-bg, var(--signal-dim));
+    border-left:2px solid var(--stage-color, var(--signal));
+    border-radius:0 6px 6px 0;
+    font-size:0.85rem;
+    color:var(--ink);
+  }
+
+  /* ── FLOW DIAGRAM: 事実 → 解釈 ── */
+  .flow{
+    display:grid;
+    grid-template-columns:1fr;
+    gap:0;
+  }
+  .flow-row{
+    display:grid;
+    grid-template-columns:1fr 40px 1fr;
+    align-items:center;
+    gap:0;
+    padding:1.1rem 0;
+    border-top:1px solid var(--line);
+  }
+  .flow-row:first-child{border-top:none;}
+  .flow-fact, .flow-interp{
+    font-size:0.86rem;
+    line-height:1.65;
+  }
+  .flow-fact{color:var(--ink-dim);padding-right:1.2rem;}
+  .flow-interp{color:var(--calm);padding-left:1.2rem;font-weight:500;}
+  .flow-arrow{
+    font-family:var(--font-mono);
+    color:var(--ink-faint);
+    text-align:center;
+    font-size:0.9rem;
+  }
+  .flow-label{
+    font-family:var(--font-mono);
+    font-size:0.62rem;
+    letter-spacing:0.1em;
+    color:var(--ink-faint);
+    text-transform:uppercase;
+    display:block;
+    margin-bottom:0.3rem;
+  }
+
+  /* ── CORE / duality panel ── */
+  .duality{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:1px;
+    background:var(--line);
+    border:1px solid var(--line);
+    border-radius:12px;
+    overflow:hidden;
+  }
+  .duality > div{
+    background:var(--panel);
+    padding:1.8rem 1.6rem;
+  }
+  .duality h4{
+    font-family:var(--font-mono);
+    font-size:0.68rem;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    margin-bottom:0.9rem;
+  }
+  .duality .means h4{color:var(--ink-faint);}
+  .duality .core h4{color:var(--calm);}
+  .duality p{font-size:0.88rem;color:var(--ink-dim);}
+  .duality .core{border-left:1px solid var(--calm);}
+  .big-word{
+    font-family:var(--font-display);
+    font-size:1.3rem;
+    color:var(--ink);
+    margin-bottom:0.6rem;
+    line-height:1.4;
+  }
+
+  /* ── OPEN QUESTIONS ── */
+  .questions{
+    display:grid;gap:0.9rem;
+  }
+  .qcard{
+    display:grid;
+    grid-template-columns:auto 1fr;
+    gap:1rem;
+    align-items:start;
+    padding:1.1rem 1.3rem;
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:10px;
+  }
+  .qmark{
+    font-family:var(--font-display);
+    font-size:1.6rem;
+    color:var(--dark);
+    line-height:1;
+  }
+  .qcard p{font-size:0.88rem;color:var(--ink-dim);}
+  .qcard .qtag{
+    font-family:var(--font-mono);
+    font-size:0.65rem;
+    color:var(--dark);
+    letter-spacing:0.06em;
+    display:block;
+    margin-bottom:0.35rem;
+  }
+
+  footer{
+    padding:3rem 0 4rem;
+    text-align:center;
+    color:var(--ink-faint);
+    font-family:var(--font-mono);
+    font-size:0.7rem;
+    letter-spacing:0.05em;
+  }
+
+  @media (max-width:640px){
+    .flow-row{grid-template-columns:1fr;gap:0.6rem;}
+    .flow-arrow{transform:rotate(90deg);text-align:left;}
+    .flow-interp{padding-left:0;}
+    .duality{grid-template-columns:1fr;}
+    .duality .core{border-left:none;border-top:1px solid var(--calm);}
+    .hero{padding:3.5rem 0 3rem;}
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="eyebrow">Self-Analysis Session — 2026.07.07</div>
+    <h1>音のかっこよさが、<br><em>海外で生きたい</em>という願いになるまで</h1>
+    <p class="hero-sub">
+      英語・海外志向のルーツを、幼少期から高校1年「ジェダイの哲学」との出会いまで時系列に遡って言語化したセッションの記録。
+    </p>
+    <div class="hero-meta">
+      <span>期間 &nbsp;<b>小学生 → 高校1年</b></span>
+      <span>形式 &nbsp;<b>事実 → 解釈 一問一答</b></span>
+      <span>ステータス &nbsp;<b>核心は未確定・継続中</b></span>
+    </div>
+
+    <div class="signature">
+      <svg viewBox="0 0 860 140" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="waveToOrbit" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stop-color="#e8a33d"/>
+            <stop offset="55%" stop-color="#4fb3a9"/>
+            <stop offset="100%" stop-color="#7d6bd0"/>
+          </linearGradient>
+        </defs>
+        <!-- waveform left -->
+        <g stroke="url(#waveToOrbit)" stroke-width="2" fill="none" stroke-linecap="round">
+          <path d="M10,70 L10,70"/>
+          <path d="M30,70 L30,55 M30,70 L30,85"/>
+          <path d="M50,70 L50,40 M50,70 L50,100"/>
+          <path d="M70,70 L70,30 M70,70 L70,110"/>
+          <path d="M90,70 L90,45 M90,70 L90,95"/>
+          <path d="M110,70 L110,25 M110,70 L110,115"/>
+          <path d="M130,70 L130,50 M130,70 L130,90"/>
+          <path d="M150,70 L150,35 M150,70 L150,105"/>
+          <path d="M170,70 L170,55 M170,70 L170,85"/>
+          <path d="M190,70 L190,45 M190,70 L190,95"/>
+        </g>
+        <!-- transition dots representing 文化への憧れ -->
+        <g fill="var(--calm)">
+          <circle cx="260" cy="70" r="3"/>
+          <circle cx="310" cy="70" r="3.4"/>
+          <circle cx="360" cy="70" r="3.8"/>
+          <circle cx="410" cy="70" r="4.2"/>
+        </g>
+        <!-- orbit path right, representing 海外への航路 -->
+        <path d="M460,70 C 520,10 620,10 680,70 C 620,130 520,130 460,70 Z"
+              stroke="url(#waveToOrbit)" stroke-width="1.6" fill="none" opacity="0.75"/>
+        <circle cx="680" cy="70" r="5" fill="#7d6bd0"/>
+        <circle cx="460" cy="70" r="5" fill="#e8a33d"/>
+        <path d="M760,70 C 790,50 820,50 850,70" stroke="#7d6bd0" stroke-width="1.6" fill="none" opacity="0.55" stroke-dasharray="2 5"/>
+        <circle cx="850" cy="70" r="3" fill="#7d6bd0" opacity="0.7"/>
+      </svg>
+      <div class="sig-caption">
+        <span>音（NCS・洋楽）</span>
+        <span>文化への憧れ</span>
+        <span>ジェダイの哲学 → 決意</span>
+        <span>まだ見ぬ航路</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- STAGE 1: TIMELINE -->
+  <section class="block">
+    <div class="block-head">
+      <span class="block-index">01</span>
+      <span class="block-title">きっかけの時系列</span>
+    </div>
+    <p class="block-desc">感覚的な「かっこよさ」が、少しずつ「文化への憧れ」へ、そして「決意」へと育っていく過程。</p>
+
+    <div class="journey">
+
+      <div class="stage" style="--stage-color:var(--signal); --stage-bg:var(--signal-dim);">
+        <div class="stage-period">小学生（父の影響）</div>
+        <h3>音としてのかっこよさ</h3>
+        <p>スターウォーズとゲーム(PS4/Switch等)を父の影響で好きになる。ゲーム実況・キル集で流れるNCSの海外BGMに触れ、意味は分からないまま「英語ってかっこいい」という感覚が生まれる。同時期、公文式で発音から英語学習を開始。</p>
+        <div class="stage-quote">まだ「英語そのもの」ではなく、娯楽の中に混ざった「音」として関わり始めた段階。</div>
+      </div>
+
+      <div class="stage" style="--stage-color:var(--signal); --stage-bg:var(--signal-dim);">
+        <div class="stage-period">小6頃</div>
+        <h3>ゲームの中の小さな実践</h3>
+        <p>Fortniteで英語圏プレイヤーとマッチし、拙いながらもチャット・ボイスチャットで交流。言語設定を英語にするなど、憧れがゲームの中で小さな行動に変わり始める。</p>
+      </div>
+
+      <div class="stage" style="--stage-color:var(--calm); --stage-bg:var(--calm-dim);">
+        <div class="stage-period">中学</div>
+        <h3>文化そのものへの憧れ</h3>
+        <p>英語授業冒頭で流れる洋楽をきっかけに洋画・洋ドラマへ興味が拡大。「初対面でもフレンドリーな挨拶」「個人が尊重される(マーベルの各ヒーローの個性)」文化に強く惹かれる。「意思疎通ではなく、言葉で文化を共有したい」という気持ちが芽生える。</p>
+        <div class="stage-quote">ただし、この頃はまだ気持ちが膨らむだけで、大きな行動には移せていなかった。</div>
+      </div>
+
+      <div class="stage" style="--stage-color:var(--dark); --stage-bg:var(--dark-dim);">
+        <div class="stage-period">高校1年 冬</div>
+        <h3>「ジェダイの哲学」という転換</h3>
+        <p>ルークが農家を継ぐ人生から抜け出したいと願う心情に自分を重ねる。ヨーダの「できるかできないかじゃない、やるかやらないかだ」という、思い込みを手放す教えに触れ、「英語を話せるようになって、色んな国の人と交流するんだ」という決意に変わる。</p>
+        <div class="stage-quote">「かっこいいから憧れる」段階から、「思い込みを手放して、やる」という行動原理への転換点。</div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- STAGE 2: FACT -> INTERPRETATION -->
+  <section class="block">
+    <div class="block-head">
+      <span class="block-index">02</span>
+      <span class="block-title">事実 → 本人の解釈</span>
+    </div>
+    <p class="block-desc">今回のセッションで本人が言語化した対応関係。</p>
+
+    <div class="flow">
+      <div class="flow-row">
+        <div class="flow-fact"><span class="flow-label">事実</span>Fortniteで課金したくてもできなかった不便さがあった</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-interp"><span class="flow-label">解釈</span>お金＝安心・保険という感覚の土台の1つ</div>
+      </div>
+      <div class="flow-row">
+        <div class="flow-fact"><span class="flow-label">事実</span>やりたいこと(海外に行く等)にはお金がかかる場面が多い</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-interp"><span class="flow-label">解釈</span>お金は目的ではなく、あくまで手段</div>
+      </div>
+      <div class="flow-row">
+        <div class="flow-fact"><span class="flow-label">事実</span>ヨーダ「やるかやらないかだ」という教えに触れた</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-interp"><span class="flow-label">解釈</span>思い込みを手放せば、英語も話せるようになる</div>
+      </div>
+      <div class="flow-row">
+        <div class="flow-fact"><span class="flow-label">事実</span>洋画・洋ドラマで見た「個人が尊重される」文化</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-interp"><span class="flow-label">解釈</span>実際にその文化をこの身で経験したい</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STAGE 3: MEANS vs CORE -->
+  <section class="block">
+    <div class="block-head">
+      <span class="block-index">03</span>
+      <span class="block-title">「手段」と「核」の切り分け</span>
+    </div>
+    <p class="block-desc">「お金を稼ぎたい」と「海外で暮らしたい・働きたい」は、同列の欲望ではなく主従の関係にある。</p>
+
+    <div class="duality">
+      <div class="means">
+        <h4>Means — 手段</h4>
+        <div class="big-word">お金</div>
+        <p>やりたいことを叶えるための手段。加えて、不測の事態(怪我・宿の確保など)への心理的な保険としての役割も持つ。お金それ自体を増やすことへの強い執着は今のところ語られていない。</p>
+      </div>
+      <div class="core">
+        <h4>Core（仮説） — 向かう先</h4>
+        <div class="big-word">憧れてきた文化を、この身で経験すること</div>
+        <p>初対面でもフレンドリーな距離感、個人が尊重される社会。長年遠くから見つめてきたものを、実際に自分の生活として味わいたいという願い。ただし本人も「核が何かはまだ難しい」と認めており、この時点では仮説にとどまる。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- STAGE 4: OPEN QUESTIONS -->
+  <section class="block">
+    <div class="block-head">
+      <span class="block-index">04</span>
+      <span class="block-title">未消化の問い — 次回への入口</span>
+    </div>
+
+    <div class="questions">
+      <div class="qcard">
+        <div class="qmark">?</div>
+        <div>
+          <span class="qtag">要・再読</span>
+          <p>「ジェダイの哲学」を読み返した上で、「文化を経験したい」という核が、本の中の何にもっと具体的に紐づいているのか。ライトサイド／ダークサイドの二元論(裏表であり片方だけは存在しない)という視点は、今後の自己分析(行動エンジンの二面性など)にどう接続しうるか。</p>
+        </div>
+      </div>
+      <div class="qcard">
+        <div class="qmark">?</div>
+        <div>
+          <span class="qtag">接続の検証</span>
+          <p>高校1年で得た「やるかやらないかだ」という後押しは、大学時代の主体的行動(TOEICクラスへの直談判、英語コミュニティでの旅行)とどう地続きなのか。</p>
+        </div>
+      </div>
+      <div class="qcard">
+        <div class="qmark">?</div>
+        <div>
+          <span class="qtag">検証待ち</span>
+          <p>「個人が尊重される文化への憧れ」は、日本の集団主義的な環境への何らかの違和感の裏返しなのか、それとも純粋な憧れとして独立しているのか。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>SELF-ANALYSIS NOTE — 音から始まった航路 — 2026.07.07</footer>
+
+</div>
+
+</body>
+</html>

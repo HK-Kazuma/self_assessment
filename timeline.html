@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>自分史タイムライン</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Inter:wght@400;500;600&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #f7f6f3;
+    --surface: #ffffff;
+    --surface2: #f0efe9;
+    --border: rgba(0,0,0,0.1);
+    --border-md: rgba(0,0,0,0.18);
+    --text-primary: #1a1918;
+    --text-secondary: #6b6963;
+    --text-tertiary: #9e9b93;
+    --accent: #2f52a0;
+    --accent-light: #e8eef8;
+
+    --c-turning: #e8861a;
+    --c-turning-bg: #fff8ee;
+    --c-academic: #2f52a0;
+    --c-academic-bg: #eef1fb;
+    --c-activity: #1a8a5a;
+    --c-activity-bg: #eaf6f0;
+    --c-english: #b84040;
+    --c-english-bg: #fdf0f0;
+    --c-career: #6b3db5;
+    --c-career-bg: #f3effe;
+
+    --radius: 10px;
+    --radius-sm: 6px;
+    --font-body: 'Noto Sans JP', sans-serif;
+    --font-mono: 'Inter', sans-serif;
+  }
+
+  body {
+    font-family: var(--font-body);
+    background: var(--bg);
+    color: var(--text-primary);
+    line-height: 1.7;
+    min-height: 100vh;
+  }
+
+  /* ── Header ── */
+  .header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 2.5rem 2rem 2rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .header-inner {
+    max-width: 860px;
+    margin: 0 auto;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .header h1 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--text-primary);
+  }
+  .header-sub {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    margin-top: 2px;
+    font-family: var(--font-mono);
+  }
+
+  /* ── Stats ── */
+  .stats {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .stat {
+    background: var(--surface2);
+    border-radius: var(--radius-sm);
+    padding: 6px 14px;
+    text-align: center;
+  }
+  .stat-num {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--accent);
+    font-family: var(--font-mono);
+    line-height: 1.2;
+  }
+  .stat-label {
+    font-size: 0.68rem;
+    color: var(--text-secondary);
+    margin-top: 1px;
+  }
+
+  /* ── Main layout ── */
+  .main {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 2rem 1.25rem 4rem;
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 0 2.5rem;
+  }
+
+  /* ── Sidebar ── */
+  .sidebar {
+    padding-top: 0.5rem;
+  }
+  .sidebar-section {
+    margin-bottom: 2rem;
+  }
+  .sidebar-title {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-tertiary);
+    margin-bottom: 0.75rem;
+    font-family: var(--font-mono);
+  }
+
+  /* Legend */
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+    margin-bottom: 6px;
+    cursor: pointer;
+    padding: 4px 6px;
+    border-radius: var(--radius-sm);
+    transition: background 0.15s;
+    user-select: none;
+  }
+  .legend-item:hover { background: var(--surface2); }
+  .legend-item.active-filter { background: var(--surface2); font-weight: 500; color: var(--text-primary); }
+  .legend-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  /* Filter reset */
+  .btn-reset {
+    font-size: 0.72rem;
+    color: var(--text-tertiary);
+    background: none;
+    border: 1px solid var(--border-md);
+    border-radius: var(--radius-sm);
+    padding: 4px 10px;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: var(--font-body);
+    margin-top: 4px;
+    display: block;
+    width: 100%;
+  }
+  .btn-reset:hover { color: var(--text-primary); border-color: var(--accent); }
+
+  /* Turning points summary */
+  .tp-list { list-style: none; }
+  .tp-item {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    padding: 5px 0;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    gap: 6px;
+    align-items: flex-start;
+    line-height: 1.4;
+  }
+  .tp-item:last-child { border-bottom: none; }
+  .tp-num {
+    font-size: 0.65rem;
+    font-weight: 700;
+    font-family: var(--font-mono);
+    color: var(--c-turning);
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  /* ── Timeline ── */
+  .timeline { padding-top: 0.5rem; }
+
+  .phase-block { margin-bottom: 0; }
+  .phase-header {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    padding: 1.5rem 0 0.6rem;
+    position: relative;
+  }
+  .phase-header::before {
+    content: '';
+    position: absolute;
+    left: -2.5rem;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--border);
+  }
+  .phase-dot {
+    position: absolute;
+    left: -2.5rem;
+    top: 50%;
+    transform: translate(-5px, -50%);
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 2px solid var(--bg);
+    z-index: 1;
+  }
+  .phase-year {
+    font-size: 0.72rem;
+    font-family: var(--font-mono);
+    font-weight: 600;
+    color: var(--text-tertiary);
+    letter-spacing: 0.04em;
+    min-width: 80px;
+  }
+  .phase-name {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text-primary);
+  }
+  .phase-sub {
+    font-size: 0.72rem;
+    color: var(--text-secondary);
+    margin-left: auto;
+  }
+  .now-pill {
+    display: inline-block;
+    font-size: 0.62rem;
+    font-weight: 600;
+    font-family: var(--font-mono);
+    background: #d4efdf;
+    color: #1a7a40;
+    border-radius: 20px;
+    padding: 1px 8px;
+    margin-left: 6px;
+    vertical-align: middle;
+  }
+
+  /* Connector line along timeline */
+  .phase-events {
+    position: relative;
+    padding-left: 0;
+    padding-bottom: 0.5rem;
+  }
+  .phase-events::before {
+    content: '';
+    position: absolute;
+    left: -2.5rem;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--border);
+  }
+
+  /* Event card */
+  .event-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 13px 16px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: border-color 0.15s, box-shadow 0.15s, transform 0.1s;
+    position: relative;
+  }
+  .event-card::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+    border-radius: var(--radius) 0 0 var(--radius);
+    background: var(--cat-color, #ccc);
+  }
+  .event-card:hover {
+    border-color: var(--cat-color, #ccc);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+  }
+  .event-card.open {
+    border-color: var(--cat-color, #ccc);
+    box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+  }
+  .event-card[data-hidden="true"] { display: none; }
+
+  .event-top {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .event-icon {
+    font-size: 1rem;
+    line-height: 1;
+  }
+  .event-title {
+    font-size: 0.88rem;
+    font-weight: 500;
+    color: var(--text-primary);
+    flex: 1;
+    min-width: 0;
+  }
+  .event-badge {
+    font-size: 0.63rem;
+    font-weight: 600;
+    font-family: var(--font-mono);
+    padding: 2px 7px;
+    border-radius: 3px;
+    white-space: nowrap;
+  }
+  .event-arrow {
+    font-size: 0.75rem;
+    color: var(--text-tertiary);
+    transition: transform 0.2s;
+    margin-left: 4px;
+    flex-shrink: 0;
+  }
+  .event-card.open .event-arrow { transform: rotate(180deg); }
+
+  .event-body {
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+    line-height: 1.7;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid var(--border);
+    display: none;
+  }
+  .event-card.open .event-body { display: block; }
+
+  /* Category colors */
+  .cat-turning   { --cat-color: var(--c-turning); }
+  .cat-academic  { --cat-color: var(--c-academic); }
+  .cat-activity  { --cat-color: var(--c-activity); }
+  .cat-english   { --cat-color: var(--c-english); }
+  .cat-career    { --cat-color: var(--c-career); }
+
+  .badge-turning  { background: var(--c-turning-bg);  color: var(--c-turning); }
+  .badge-academic { background: var(--c-academic-bg); color: var(--c-academic); }
+  .badge-activity { background: var(--c-activity-bg); color: var(--c-activity); }
+  .badge-english  { background: var(--c-english-bg);  color: var(--c-english); }
+  .badge-career   { background: var(--c-career-bg);   color: var(--c-career); }
+
+  /* Print */
+  @media print {
+    .sidebar { display: none; }
+    .main { grid-template-columns: 1fr; }
+    .event-body { display: block !important; }
+    .event-arrow { display: none; }
+  }
+
+  @media (max-width: 640px) {
+    .main {
+      grid-template-columns: 1fr;
+      padding: 1rem;
+    }
+    .sidebar { order: 2; margin-top: 2rem; }
+    .timeline { order: 1; }
+    .phase-events::before,
+    .phase-header::before { display: none; }
+    .phase-dot { display: none; }
+    .header-inner { flex-direction: column; align-items: flex-start; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <div>
+      <h1>自分史タイムライン</h1>
+      <div class="header-sub">2021年4月 → 2026年6月現在（大学3回生）</div>
+    </div>
+    <div class="stats">
+      <div class="stat">
+        <div class="stat-num">5</div>
+        <div class="stat-label">年間の歩み</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">4</div>
+        <div class="stat-label">主な転換点</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">8+</div>
+        <div class="stat-label">取得資格・成果</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="main">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+
+    <div class="sidebar-section">
+      <div class="sidebar-title">カテゴリ</div>
+      <div class="legend-item" data-filter="turning" onclick="filterBy('turning')">
+        <span class="legend-dot" style="background:var(--c-turning)"></span>転換点・気づき
+      </div>
+      <div class="legend-item" data-filter="academic" onclick="filterBy('academic')">
+        <span class="legend-dot" style="background:var(--c-academic)"></span>学業・資格
+      </div>
+      <div class="legend-item" data-filter="activity" onclick="filterBy('activity')">
+        <span class="legend-dot" style="background:var(--c-activity)"></span>課外・部活・バイト
+      </div>
+      <div class="legend-item" data-filter="english" onclick="filterBy('english')">
+        <span class="legend-dot" style="background:var(--c-english)"></span>英語・国際交流
+      </div>
+      <div class="legend-item" data-filter="career" onclick="filterBy('career')">
+        <span class="legend-dot" style="background:var(--c-career)"></span>キャリア・就活
+      </div>
+      <button class="btn-reset" onclick="filterBy('all')">すべて表示</button>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-title">4つの転換点</div>
+      <ul class="tp-list">
+        <li class="tp-item">
+          <span class="tp-num">①</span>
+          <span>「ジェダイの哲学」で夢を言語化。大学受験を決意。</span>
+        </li>
+        <li class="tp-item">
+          <span class="tp-num">②</span>
+          <span>建設インターンで揺らぐ。建築製図嫌い → 情報系へ転換。</span>
+        </li>
+        <li class="tp-item">
+          <span class="tp-num">③</span>
+          <span>外国人の友人と英語のみで旅行。国際志向が本物だと確信。</span>
+        </li>
+        <li class="tp-item">
+          <span class="tp-num">④</span>
+          <span>AI学習開始。AI × ドメイン × 英語のキャリア軸を確立。</span>
+        </li>
+      </ul>
+    </div>
+
+  </aside>
+
+  <!-- Timeline -->
+  <main class="timeline">
+
+    <!-- ── 高校1年 ── -->
+    <div class="phase-block">
+      <div class="phase-header">
+        <div class="phase-dot" style="background:#b0b0a8"></div>
+        <span class="phase-year">2021.04 →</span>
+        <span class="phase-name">高校1年</span>
+        <span class="phase-sub">工業高校 建設科 入学</span>
+      </div>
+      <div class="phase-events">
+
+        <div class="event-card cat-turning" onclick="toggleCard(this)">
+          <div class="event-top">
+            <span class="event-icon">🎮</span>
+            <span class="event-title">マイクラ好き → 建築士を目指す</span>
+            <span class="event-badge badge-turning">きっかけ</span>
+            <span class="event-arrow">▾</span>
+          </div>
+          <div class="event-body">Minecraftで家・拠点を建てたり、複数人と都市開発するのが好きだった。その延長で建築士を志し、工業高校建設科へ入学。</div>
+        </div>
+
+        <div class="event-card cat-activity" onclick="toggleCard(this)">
+          <div class="event-top">
+            <span class="event-icon">🏓</span>
+            <span class="event-title">卓球部 入部（中学からの継続）</span>
+            <span class="event-arrow">▾</span>
+          </div>
+          <div class="event-body">中学から続けていた卓球部に入部。当時は英語も好きで、洋楽・洋画・英語系YouTubeを楽しんでいた。</div>
+        </div>
+
+        <div class="event-card cat-academic" onclick="toggleCard(this)">
+          <div class="event-top">
+            <span class="event-icon">📝</span>
+            <span class="event-title">計算技術検定3級・危険物乙4 取得</span>
+            <span class="event-badge badge-academic">資格</span>
+            <span class="event-arrow">▾</span>
+          </div>
+          <div class="event-body">工業高校の必修資格を着実に取得。学校カリキュラムに沿って進める。</div>
+        </div>
+
+        <div class="event-card cat-turning" onclick="toggleCard(this)">
+          <div class="event-top">
+            <span class="event-icon">📖</span>
+            <span class="event-title">「ジェダイの哲学」との出会い ― 転換点①</span>
+            <span class="event-badge badge-turning">転換点①</span>
+            <span class="event-arrow">▾</span>
+          </div>
+          <div class="event-body">1年冬。「意識を集中させたことが現実を作る」に触れ、「自分は何がしたいのか」を自問。「お金を稼ぎたい」「海外で暮らしたい・働きたい」を言語化。大手ゼネコン（建設×海外）を目標に設定。</div>
+        </div>
+
+        <div class="event-card cat-academic" onclick="toggleCard(this)">
+          <div class="event-top">
+            <span class="event-icon">🎯</span>
+            <span class="event-title">大学受験を決意 ＆ 卓球部退部</span>
+            <span class="event-badge badge-academic">決断</span>
+            <span class="event-arrow">▾</span>
+          </div>
+          <div class="event-body">難関大 → 大手ゼネコンを逆算し、1年冬に受験を決意。部活を辞め受験勉強に専念する大きな選択。</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ── 高校2年 ── -->
+    <div class="phase-block">
+      <div class="phase-header">
+        <div class="phase-dot" style="background:#5db88a"></div>
+        <span class="phase-year">2022.04 →</span>
+        <span class="phase-name">高校2年</span>
+        <span class="phase-sub">目標設定と揺らぎ</span>
+      </div>
+      <div class="phase-events">
+
+        <div class="event-card cat-academic" onclick="toggleCard(this)">
+          <div class="event-top">
+            <span class="event-icon">📚</span>
+            <span class="event-title">漢検・英検・数検 各準2級 取得</span>
+            <span class="event-badge badge-academic">資格</span>
+            <span class="event-arrow">▾</span>
+          </div>
+          <div class="event-body">現在地を確かめる身近な目標として設定。高2秋ごろまでに全取得。地道な自己投資の積み重ね。</div>
+        </div>
+
+        <div class="event-card cat-english" onclick="toggleCard(this)">
+          <div class="event-top">
+            <span class="event-icon">🌍</span>
+            <span class="event-title">HelloTalk で英語会話練習開始</span>
+            <span class="event-arrow">▾</span>
+          </div>
+          <div class="event-body">「英語を喋りたい」という気持ちから語学交流アプリで不特定多数と会話練習を開始。</div>
+        </div>
+
+        <div class="event-card cat-activity" onclick="toggleCard(this)">
+          <div class="event-top">
+            <span class="event-icon">🏗️</span>
+            <span class="event-title">県内建設会社 インターンシップ（5日間）</span>
+            <span class="event-badge badge-activity">体験</span>
+            <span class="event-arrow">▾</span>
+          </div>
+          <div class="event-body">2年夏。実際の現場を見て重機も体験。楽しさと過酷さを実感。「定年まで建設業を続ける自分」が想像できず、やりたいことが初めて揺らぐ。</div>
+        </div>
+
+        <div class="event-card cat-turning" onclick="toggleCard(this)">
+          <div class="event-top">
+            <span class="event-icon">💭</span>
+            <span class="event-title">志望校・方向性を見直し</span>
+            <span class="event-badge badge-turning">揺らぎ</span>
+            <span class="event-arrow">▾</span>
+          </div>
+          <div class="event-body">インターン後のモチベーション低下から第一志望校を変更。大手ゼネコンは引き続き視野に入れながら、現実的な進路を再設定。</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ── 高校3年 ── -->
+    <div class="phase-block">
+      <div class="phase-header">
+        <div class="phase-dot" style="background:#e8861a"></div>
+        <span class="phase-year">2023.04 →</span>
+        <span class="phase-name">高校3年</span>
+        <span class="phase-sub">受験・資格・転換</span>
+      </div>
+      <div class="phase-events">
+
+        <div class="event-card cat-academic" onclick="toggleCard(this)">
+          <div class="event-top">
+            <span class="event-icon">🔨</span>
+            <span class="event-title">2級建築施工管理技士補 合格（3年冬）</span>
+            <span class="event-badge badge-academic">資格</span>
+            <span class="event-arrow">▾</span>
+          </div>
+          <div class="event-body">夏から受験勉強と並行して準備し冬に合格。しかしこの時点ですでに建築業界への意志は揺らいでいた。</div>
+        </div>
+
+        <div class="event-card cat-turning" onclick="toggleCard(this)">
+          <div class="event-top">
+            <span class="event-icon">💡</span>
+            <span class="event-title">建築製図への苦手意識 → 情報系を志望に追加（転換点②）</span>
+            <span class="event-badge badge-turning">転換点②</span>
+            <span class="event-arrow">▾</span>
+          </div>
+          <div class="event-body">建築製図が嫌いになり、建築・建設業界への意志が薄れる。志望校に情報系学部を加える。方向性の大きな転換。</div>
+        </div>
+
+        <div class="event-card cat-turning" onclick="toggleCard(this)">
+          <div class="event-top">
+            <span class="event-icon">❌</span>
+            <span class="event-title">前期受験失敗 → 後期で合格・情報系進学決定（2024年3月）</span>
+            <span class="event-badge badge-turning">挫折→再起</span>
+            <span class="event-arrow">▾</span>
+          </div>
+          <div class="event-body">前期は滑り止めなしで失敗。浪人不可という状況で、担任の先生に勧められた大学を後期受験。2024年3月合格。情報系への進学を決意。</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ── 大学1年 ── -->
+    <div class="phase-block">
+      <div class="phase-header">
+        <div class="phase-dot" style="background:#8b80d8"></div>
+        <span class="phase-year">2024.04 →</span>
+        <span class="phase-name">大学1年</span>
+        <span class="phase-sub">新環境・新挑戦</span>
+      </div>
+      <div class="phase-events">
+
+        <div class="event-card cat-activity" onclick="toggleCard(this)">
+          <div class="event-top">
+            <span class="event-icon">🥍</span>
+            <span class="event-title">ラクロス部 入部 → 秋に退部（事実上廃部）</span>
+            <span class="event-arrow">▾</span>
+          </div>
+          <div class="event-body">大学から新しいことを始めたい気持ちで入部。しかし部員が減り自分だけになり事実上廃部となり退部。</div>
+        </div>
+
+        <div class="event-card cat-activity" onclick="toggleCard(this)">
+          <div class="event-top">
+            <span class="event-icon">🍽️</span>
+            <span class="event-title">サイゼリヤ バイト開始</span>
+            <span class="event-arrow">▾</span>
+          </div>
+          <div class="event-body">飲食は嫌だったが友達の誘いで決断。現在も継続中。</div>
+        </div>
+
+        <div class="event-card cat-english" onclick="toggleCard(this)">
+          <div class="event-top">
+            <span class="event-icon">🌐</span>
+            <span class="event-title">Discord 語学交流 ― 外国人の友人と出会う</span>
+            <span class="event-arrow">▾</span>
+          </div>
+          <div class="event-body">「外国の友達を作りたい」という気持ちで語学交流コミュニティに参加。後に人生に大きく影響する出会いが生まれる。</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ── 大学2年 ── -->
+    <div class="phase-block">
+      <div class="phase-header">
+        <div class="phase-dot" style="background:#534ab7"></div>
+        <span class="phase-year">2025.04 →</span>
+        <span class="phase-name">大学2年</span>
+        <span class="phase-sub">英語・AI・意識の変化</span>
+      </div>
+      <div class="phase-events">
+
+        <div class="event-card cat-english" onclick="toggleCard(this)">
+          <div class="event-top">
+            <span class="event-icon">✈️</span>
+            <span class="event-title">Discord 友人とリアルで初対面・旅行（2025年春）― 転換点③</span>
+            <span class="event-badge badge-english">転換点③</span>
+            <span class="event-arrow">▾</span>
+          </div>
+          <div class="event-body">前年出会った外国人の友人とリアルで会う（初対面で旅行）。英語だけで乗り切ったことが大きな自信に。英語と国際志向が本物だと確信した体験。</div>
+        </div>
+
+        <div class="event-card cat-academic" onclick="toggleCard(this)">
+          <div class="event-top">
+            <span class="event-icon">📖</span>
+            <span class="event-title">TOEICクラスに直談判して移籍</span>
+            <span class="event-arrow">▾</span>
+          </div>
+          <div class="event-body">英語力向上への強い意欲から授業担当者に直接交渉し、TOEICクラスへの参加を実現。自ら動いて環境を変えた。</div>
+        </div>
+
+        <div class="event-card cat-activity" onclick="toggleCard(this)">
+          <div class="event-top">
+            <span class="event-icon">💪</span>
+            <span class="event-title">ジム入会・筋トレ開始</span>
+            <span class="event-arrow">▾</span>
+          </div>
+          <div class="event-body">自己管理・生活習慣の整備として筋トレを開始。現在も継続中。</div>
+        </div>
+
+        <div class="event-card cat-turning" onclick="toggleCard(this)">
+          <div class="event-top">
+            <span class="event-icon">🤖</span>
+            <span class="event-title">AI への興味 ― 外部講座受講開始（転換点④）</span>
+            <span class="event-badge badge-turning">転換点④</span>
+            <span class="event-arrow">▾</span>
+          </div>
+          <div class="event-body">2年後期、成績不振を反省し学業に注力する中でAIへの興味が芽生える。大学の勉強と並行して外部のAI講座を受講開始。</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ── 大学3年 ── -->
+    <div class="phase-block">
+      <div class="phase-header">
+        <div class="phase-dot" style="background:#2f52a0"></div>
+        <span class="phase-year">2026.04 →</span>
+        <span class="phase-name">大学3年 <span class="now-pill">現在</span></span>
+        <span class="phase-sub">就活・研究・本格始動</span>
+      </div>
+      <div class="phase-events">
+
+        <div class="event-card cat-career" onclick="toggleCard(this)">
+          <div class="event-top">
+            <span class="event-icon">💼</span>
+            <span class="event-title">インターン応募・就活本格化</span>
+            <span class="event-badge badge-career">現在進行中</span>
+            <span class="event-arrow">▾</span>
+          </div>
+          <div class="event-body">OPTiM・DATUM STUDIO・Digital Garage・Palantir Japan・Preferred Networks などを視野に。AIエンジニア／バックエンドエンジニアを軸に、グローバル・フラットな文化を持つ企業を目標に設定。</div>
+        </div>
+
+        <div class="event-card cat-academic" onclick="toggleCard(this)">
+          <div class="event-top">
+            <span class="event-icon">🔬</span>
+            <span class="event-title">研究：LLM × HPC コード生成</span>
+            <span class="event-arrow">▾</span>
+          </div>
+          <div class="event-body">VibeCodeHPC（arXiv:2510.00031）などを先行研究として調査。マルチエージェント自律HPCコード最適化をテーマに研究発表も実施。ブルーオーシャン領域でのニッチ開拓を意識。</div>
+        </div>
+
+        <div class="event-card cat-career" onclick="toggleCard(this)">
+          <div class="event-top">
+            <span class="event-icon">🌐</span>
+            <span class="event-title">キャリア軸の確立：AI × ドメイン × 英語</span>
+            <span class="event-arrow">▾</span>
+          </div>
+          <div class="event-body">「3分野で1/100」戦略。AI技術 × 業界ドメイン × グローバル英語の掛け算で強みを作るキャリア設計。IVS CORE 2026 運営スタッフ参加など外部経験も積極的に。</div>
+        </div>
+
+        <div class="event-card cat-english" onclick="toggleCard(this)">
+          <div class="event-top">
+            <span class="event-icon">📊</span>
+            <span class="event-title">CASEC 588点（TOEIC 525相当）→ 目標650+</span>
+            <span class="event-arrow">▾</span>
+          </div>
+          <div class="event-body">英語力を定量測定。語彙コロケーション・多義語・具体情報聴取を強化課題と特定。Kindle → Anki ワークフローで語彙習得中。海外テック就職を見据えて継続強化中。</div>
+        </div>
+
+        <div class="event-card cat-career" onclick="toggleCard(this)">
+          <div class="event-top">
+            <span class="event-icon">🛠️</span>
+            <span class="event-title">個人開発・チーム開発 複数経験</span>
+            <span class="event-arrow">▾</span>
+          </div>
+          <div class="event-body">ニュースダイジェストアプリ（Python + Claude API）、F1レース予測アプリ（XGBoost）、目覚まし同盟（React Native + FastAPI）、レシピ提案アプリ（Next.js + Gemini/Claude API）など。DBスキーマ設計・AIインテグレーションをリード。</div>
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+  function toggleCard(card) {
+    card.classList.toggle('open');
+  }
+
+  let currentFilter = 'all';
+
+  function filterBy(cat) {
+    currentFilter = cat;
+
+    // Update legend highlight
+    document.querySelectorAll('.legend-item').forEach(el => {
+      el.classList.toggle('active-filter', el.dataset.filter === cat);
+    });
+
+    // Show/hide cards
+    document.querySelectorAll('.event-card').forEach(card => {
+      if (cat === 'all') {
+        card.removeAttribute('data-hidden');
+      } else {
+        const match = card.classList.contains('cat-' + cat);
+        card.setAttribute('data-hidden', match ? 'false' : 'true');
+      }
+    });
+  }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>動機の根っこ</title>
+<style>
+  :root {
+    --bg: #F6F5F2;
+    --surface: #FFFFFF;
+    --border: #E0DDD5;
+    --text-primary: #1C1B18;
+    --text-secondary: #6B685F;
+    --text-muted: #9B9890;
+
+    --inf-dark: #1D3178;
+    --inf-mid: #2B4896;
+    --inf-light: #EAEEf8;
+    --inf-border: #A8B8E8;
+
+    --reg-dark: #6B3010;
+    --reg-mid: #8B4513;
+    --reg-light: #F5EDE5;
+    --reg-border: #D4A882;
+
+    --eng-dark: #1A3D2E;
+    --eng-light: #E6F0EA;
+    --eng-border: #A8C8B4;
+
+    --ins-bg: #131210;
+    --ins-text: #EDE9DF;
+    --ins-accent: #C4A95A;
+
+    --font-display: 'Hiragino Mincho ProN', 'Yu Mincho', 'Georgia', serif;
+    --font-body: 'Hiragino Kaku Gothic ProN', 'Yu Gothic', 'Meiryo', system-ui, sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    font-size: 14px;
+    line-height: 1.7;
+  }
+
+  /* ── Header ── */
+  .page-header {
+    padding: 52px 44px 44px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+  }
+
+  .eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 14px;
+  }
+
+  .page-header h1 {
+    font-family: var(--font-display);
+    font-size: 34px;
+    font-weight: 400;
+    line-height: 1.3;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+  }
+
+  .page-header .subtitle {
+    font-size: 14px;
+    color: var(--text-secondary);
+  }
+
+  /* ── Two Themes ── */
+  .themes {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .theme-card {
+    padding: 40px 44px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .theme-card:first-child {
+    border-right: 1px solid var(--border);
+  }
+
+  .theme-tag {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    padding: 3px 10px;
+    border-radius: 2px;
+    margin-bottom: 22px;
+  }
+
+  .theme-inferior .theme-tag {
+    background: var(--inf-light);
+    color: var(--inf-dark);
+    border: 1px solid var(--inf-border);
+  }
+
+  .theme-regret .theme-tag {
+    background: var(--reg-light);
+    color: var(--reg-dark);
+    border: 1px solid var(--reg-border);
+  }
+
+  .theme-card h2 {
+    font-family: var(--font-display);
+    font-size: 20px;
+    font-weight: 400;
+    line-height: 1.5;
+    margin-bottom: 28px;
+  }
+
+  .theme-inferior h2 { color: var(--inf-mid); }
+  .theme-regret h2  { color: var(--reg-mid); }
+
+  .origin-list {
+    list-style: none;
+    margin-bottom: 28px;
+  }
+
+  .origin-list li {
+    display: flex;
+    gap: 12px;
+    font-size: 13px;
+    color: var(--text-secondary);
+    padding: 9px 0;
+    border-bottom: 1px solid var(--border);
+    line-height: 1.55;
+  }
+
+  .origin-list li:last-child { border-bottom: none; }
+
+  .origin-list .step {
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+    flex-shrink: 0;
+    padding-top: 2px;
+    text-align: right;
+    min-width: 28px;
+  }
+
+  .journal-quote {
+    font-family: var(--font-display);
+    font-size: 13px;
+    line-height: 1.9;
+    color: var(--text-secondary);
+    padding: 14px 18px;
+    border-left: 2px solid;
+    font-style: italic;
+  }
+
+  .theme-inferior .journal-quote { border-color: var(--inf-mid); }
+  .theme-regret  .journal-quote  { border-color: var(--reg-mid); }
+
+  .journal-quote small {
+    display: block;
+    margin-top: 6px;
+    font-size: 11px;
+    opacity: 0.65;
+    font-style: normal;
+  }
+
+  .psych-note {
+    margin-top: 18px;
+    padding: 12px 16px;
+    background: var(--reg-light);
+    border: 1px solid var(--reg-border);
+    border-radius: 3px;
+    font-size: 12px;
+    color: var(--reg-dark);
+    line-height: 1.65;
+  }
+
+  .psych-note strong { font-weight: 600; }
+
+  /* ── Engine ── */
+  .engine-section {
+    padding: 36px 44px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg);
+  }
+
+  .section-label {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 22px;
+  }
+
+  .engine-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .engine-source {
+    flex: 1;
+    text-align: center;
+    padding: 14px 12px;
+    border-radius: 3px;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.4;
+  }
+
+  .engine-source.inf {
+    background: var(--inf-light);
+    color: var(--inf-dark);
+    border: 1px solid var(--inf-border);
+  }
+
+  .engine-source.reg {
+    background: var(--reg-light);
+    color: var(--reg-dark);
+    border: 1px solid var(--reg-border);
+  }
+
+  .arrow {
+    color: var(--text-muted);
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+
+  .engine-box {
+    flex: 1.6;
+    background: var(--eng-dark);
+    color: #C8E4D4;
+    padding: 18px 22px;
+    border-radius: 3px;
+  }
+
+  .engine-box .engine-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: #88C4A4;
+    letter-spacing: 0.06em;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+  }
+
+  .engine-props {
+    list-style: none;
+    font-size: 12px;
+    line-height: 1.9;
+    color: #A8D4BC;
+  }
+
+  .engine-props li::before {
+    content: "— ";
+    opacity: 0.45;
+  }
+
+  /* ── Father Insight (dark panel) ── */
+  .insight-section {
+    background: var(--ins-bg);
+    color: var(--ins-text);
+    padding: 56px 44px;
+  }
+
+  .insight-eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ins-accent);
+    opacity: 0.85;
+    margin-bottom: 28px;
+  }
+
+  .insight-pull {
+    font-family: var(--font-display);
+    font-size: 19px;
+    line-height: 1.85;
+    color: var(--ins-text);
+    font-weight: 400;
+    padding-left: 22px;
+    border-left: 2px solid var(--ins-accent);
+    margin-bottom: 36px;
+  }
+
+  .insight-pull em {
+    color: var(--ins-accent);
+    font-style: normal;
+  }
+
+  .insight-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  .insight-card {
+    padding: 22px 24px;
+    border: 1px solid rgba(255,255,255,0.07);
+    border-radius: 3px;
+    background: rgba(255,255,255,0.03);
+  }
+
+  .insight-card-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: rgba(255,255,255,0.3);
+    margin-bottom: 12px;
+  }
+
+  .insight-card p {
+    font-size: 13px;
+    line-height: 1.75;
+    color: rgba(255,255,255,0.65);
+  }
+
+  /* ── Future ── */
+  .future-section {
+    padding: 40px 44px;
+    background: var(--surface);
+  }
+
+  .future-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-top: 22px;
+  }
+
+  .future-card {
+    padding: 22px 26px;
+    border-radius: 3px;
+  }
+
+  .future-card.strength {
+    background: var(--eng-light);
+    border: 1px solid var(--eng-border);
+  }
+
+  .future-card.fragility {
+    background: #FEF9EC;
+    border: 1px solid #D4BC6A;
+  }
+
+  .future-card h3 {
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+
+  .future-card.strength  h3 { color: var(--eng-dark); }
+  .future-card.fragility h3 { color: #7A5A10; }
+
+  .future-card p {
+    font-size: 13px;
+    line-height: 1.75;
+    color: var(--text-secondary);
+  }
+
+  /* ── Footer ── */
+  .page-footer {
+    padding: 20px 44px;
+    border-top: 1px solid var(--border);
+    text-align: right;
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 0.06em;
+    background: var(--bg);
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 640px) {
+    .page-header { padding: 36px 24px 32px; }
+    .page-header h1 { font-size: 26px; }
+    .themes, .insight-grid, .future-grid { grid-template-columns: 1fr; }
+    .theme-card { padding: 32px 24px; border-right: none; }
+    .theme-card:first-child { border-bottom: 1px solid var(--border); }
+    .engine-section, .insight-section, .future-section { padding: 32px 24px; }
+    .engine-row { flex-direction: column; }
+    .engine-source { width: 100%; }
+    .arrow { transform: rotate(90deg); }
+    .page-footer { padding: 16px 24px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<header class="page-header">
+  <p class="eyebrow">自己分析レポート</p>
+  <h1>動機の根っこ</h1>
+  <p class="subtitle">劣等感と後悔への恐怖——行動エンジンの解剖</p>
+</header>
+
+<!-- Two themes -->
+<section class="themes">
+
+  <!-- 劣等感 -->
+  <div class="theme-card theme-inferior">
+    <span class="theme-tag">根っこ①　劣等感</span>
+    <h2>卓球ができて、<br>勉強もできた仲間たち</h2>
+    <ul class="origin-list">
+      <li>
+        <span class="step">起点</span>
+        中学の同級生・部活仲間に学力の高い人が多かった。卓球の実力がありながら、自分から見て「勉強できる側」の人間が周りにいた
+      </li>
+      <li>
+        <span class="step">転機</span>
+        工業高校へ進学。「大学受験する」が少数派の環境になり、構造的な孤独の中で自分の立ち位置が際立った
+      </li>
+      <li>
+        <span class="step">具体化</span>
+        父親（中卒）の姿が「勉強しなかった未来」の実像として目の前にあった。学歴・収入・家庭内の態度——最悪のケースが鮮明に見えた
+      </li>
+      <li>
+        <span class="step">機能</span>
+        「あいつらより劣っている」という感情が受験への強烈な行動力になった
+      </li>
+    </ul>
+    <blockquote class="journal-quote">
+      「先生の話を聞いたら自分の中には劣等感があって、その劣等感が自分を闇に落としていたんだ。ならこれからはその劣等感に対して見方を変えていけばいい」
+      <small>— 令和6年1月27日</small>
+    </blockquote>
+  </div>
+
+  <!-- 後悔への恐怖 -->
+  <div class="theme-card theme-regret">
+    <span class="theme-tag">根っこ②　後悔への恐怖</span>
+    <h2>「勉強しておけばよかった」<br>と嘆く未来が見えた</h2>
+    <ul class="origin-list">
+      <li>
+        <span class="step">起点</span>
+        「このままでいいのか」という自問が繰り返された。現状に留まり続けた先の後悔が、映像として浮かんだ
+      </li>
+      <li>
+        <span class="step">具体化</span>
+        父親の現在を自分の未来に重ねた。「父親みたいになりたくない」という感情は、抽象的な恐怖ではなく、目の前にある具体的な人間への解像度から来ていた
+      </li>
+      <li>
+        <span class="step">特性</span>
+        回避型動機（良いものを得たい、ではなく悪い状態を避けたい）は短期的に非常に強く作用する。最悪のケースが具体的なほど、今の不快感を無視できなくなる
+      </li>
+      <li>
+        <span class="step">機能</span>
+        現状維持を選ぶことが心理的に不可能になった。コンフォートゾーンへの拒絶反応が習慣の基底に刻まれた
+      </li>
+    </ul>
+    <blockquote class="journal-quote">
+      「暖かくてぬるい、コンフォートゾーンに浸ったままでいいのか。アグレッシブな人生の方がワクワクする」
+      <small>— 令和7年11月24日</small>
+    </blockquote>
+    <p class="psych-note">
+      <strong>心理的メモ：</strong>「絶対こうなりたくない」という最悪像が鮮明であるほど、エンジンは強く回る。父親という「生きた実例」が目の前にいたことで、このメカニズムが極めて強力に機能した。
+    </p>
+  </div>
+
+</section>
+
+<!-- Engine -->
+<section class="engine-section">
+  <p class="section-label">2つの根っこが生み出すもの</p>
+  <div class="engine-row">
+    <div class="engine-source inf">劣等感<br><span style="font-size:11px;font-weight:400;opacity:0.7;">仲間・環境との比較</span></div>
+    <span class="arrow">→</span>
+    <div class="engine-source reg">後悔への恐怖<br><span style="font-size:11px;font-weight:400;opacity:0.7;">父親の姿が映す未来</span></div>
+    <span class="arrow">→</span>
+    <div class="engine-box">
+      <p class="engine-title">行動エンジン</p>
+      <ul class="engine-props">
+        <li>コンフォートゾーンへの拒絶反応</li>
+        <li>「過去の自分を超える」競争観</li>
+        <li>将来から逆算する思考習慣</li>
+        <li>外部刺激に即座に反応する感度</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- Father insight — dark panel -->
+<section class="insight-section">
+  <p class="insight-eyebrow">今日見えた死角</p>
+  <blockquote class="insight-pull">
+    父親を「勉強しなかった結果の人間」という<br>
+    一本の線で描いていた。<br>
+    でも見えていなかったことがある——<br>
+    <em>「中卒で家族を養い続けた」という事実の重さ。</em>
+  </blockquote>
+  <div class="insight-grid">
+    <div class="insight-card">
+      <p class="insight-card-label">父親の側から見ると</p>
+      <p>仕事で消耗して、怒りが収まらないまま家に帰る。それでも家族のそばにいる。その上で、息子からも軽蔑される。それを自分に当てはめたとき、ものすごくつらいと感じた——それは今日初めて見えた景色だった。</p>
+    </div>
+    <div class="insight-card">
+      <p class="insight-card-label">この気づきが意味すること</p>
+      <p>父親への態度を後悔するのではなく、あの自分がいたから今の自分がいる。ただ、「見えていない苦労が人にはある」という感覚を、これから先のどこかで使える軸にしていける。</p>
+    </div>
+  </div>
+</section>
+
+<!-- Future -->
+<section class="future-section">
+  <p class="section-label">このエンジン構造の先を見る</p>
+  <div class="future-grid">
+    <div class="future-card strength">
+      <h3>今の強み</h3>
+      <p>「父親みたいになりたくない」という具体的な最悪ケースが鮮明にある間、このエンジンは非常に強力に機能する。コンフォートゾーンに留まることが心理的にできない体質になっている。</p>
+    </div>
+    <div class="future-card fragility">
+      <h3>意識しておくこと</h3>
+      <p>「お父さんよりはるかに先に来た」と感じた瞬間、回避型動機のエンジンは弱まる可能性がある。ジャーナルに芽生えている「ワクワクする方を選ぶ」「海外で働く」という向かう先の動機を、今から育てていくことが次の鍵になる。</p>
+    </div>
+  </div>
+</section>
+
+<footer class="page-footer">
+  令和8年7月　— ジャーナル分析より
+</footer>
+
+</body>
+</html>

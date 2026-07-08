@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>自己調査ファイル ― 6つの問いを辿る</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@500;700;900&family=Shippori+Mincho:wght@500;600;800&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --paper: #ece3cf;
+    --paper-card: #f9f5ea;
+    --paper-card2: #f3ecd9;
+    --ink: #2b2620;
+    --ink-soft: #6d6353;
+    --ink-faint: #9a8f78;
+    --line: rgba(43,38,32,0.16);
+    --line-strong: rgba(43,38,32,0.3);
+    --stamp-open: #a1382a;
+    --stamp-open-bg: rgba(161,56,42,0.07);
+    --stamp-solved: #3d6b52;
+    --stamp-solved-bg: rgba(61,107,82,0.07);
+    --tape: #cdbb8e;
+    --tape2: #d8c9a0;
+    --thread: #8a7d5c;
+    --f-display: 'Zen Kaku Gothic New', sans-serif;
+    --f-body: 'Shippori Mincho', serif;
+    --f-mono: 'JetBrains Mono', monospace;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--f-body);
+    background:
+      radial-gradient(ellipse at 20% 0%, rgba(255,255,255,0.35), transparent 60%),
+      var(--paper);
+    color: var(--ink);
+    line-height: 1.9;
+    min-height: 100vh;
+    position: relative;
+  }
+
+  /* subtle paper grain */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0.5;
+    background-image:
+      repeating-linear-gradient(0deg, rgba(43,38,32,0.015) 0px, transparent 1px, transparent 2px),
+      repeating-linear-gradient(90deg, rgba(43,38,32,0.012) 0px, transparent 1px, transparent 3px);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; animation: none !important; scroll-behavior: auto !important; }
+  }
+
+  a { color: inherit; }
+
+  /* ───────── Hero ───────── */
+  .hero {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 4.5rem 1.5rem 3rem;
+    position: relative;
+  }
+  .hero-tape {
+    position: absolute;
+    top: 12px;
+    left: 50%;
+    transform: translateX(-50%) rotate(-2deg);
+    width: 140px;
+    height: 34px;
+    background: linear-gradient(180deg, var(--tape2), var(--tape));
+    opacity: 0.75;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+  }
+  .case-number {
+    font-family: var(--f-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    color: var(--ink-soft);
+    text-align: center;
+    margin-bottom: 0.9rem;
+  }
+  .hero h1 {
+    font-family: var(--f-display);
+    font-weight: 900;
+    font-size: clamp(2.1rem, 6vw, 3rem);
+    text-align: center;
+    letter-spacing: 0.02em;
+    color: var(--ink);
+  }
+  .hero-sub {
+    text-align: center;
+    font-size: 0.95rem;
+    color: var(--ink-soft);
+    margin-top: 0.6rem;
+  }
+  .hero-meta {
+    display: flex;
+    justify-content: center;
+    gap: 1.4rem;
+    flex-wrap: wrap;
+    margin-top: 1.6rem;
+    font-family: var(--f-mono);
+    font-size: 0.68rem;
+    color: var(--ink-faint);
+    letter-spacing: 0.03em;
+  }
+  .hero-meta span b { color: var(--ink-soft); font-weight: 600; }
+
+  .hero-lede {
+    margin-top: 2.2rem;
+    padding: 1.3rem 1.5rem;
+    background: var(--paper-card);
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    font-size: 0.92rem;
+    color: var(--ink-soft);
+    box-shadow: 0 1px 0 rgba(255,255,255,0.5) inset, 0 6px 16px rgba(43,38,32,0.06);
+  }
+  .hero-lede b { color: var(--ink); }
+
+  /* ───────── Tab rail ───────── */
+  .tab-rail {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: rgba(236,227,207,0.92);
+    backdrop-filter: blur(4px);
+    border-bottom: 1px solid var(--line-strong);
+    padding: 0 1rem;
+  }
+  .tab-rail-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    display: flex;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .tab-rail-inner::-webkit-scrollbar { display: none; }
+  .tab-btn {
+    font-family: var(--f-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.03em;
+    white-space: nowrap;
+    background: none;
+    border: none;
+    border-bottom: 3px solid transparent;
+    color: var(--ink-faint);
+    padding: 0.8rem 0.9rem 0.65rem;
+    cursor: pointer;
+    transition: color 0.15s, border-color 0.15s;
+  }
+  .tab-btn:hover { color: var(--ink); }
+  .tab-btn.active { color: var(--ink); border-bottom-color: var(--stamp-open); font-weight: 700; }
+  .tab-btn:focus-visible { outline: 2px solid var(--stamp-open); outline-offset: 2px; }
+
+  /* ───────── Main ───────── */
+  main { max-width: 760px; margin: 0 auto; padding: 2.5rem 1.5rem 2rem; position: relative; z-index: 2; }
+
+  section { margin-bottom: 3.2rem; opacity: 0; transform: translateY(14px); transition: opacity 0.6s ease, transform 0.6s ease; }
+  section.visible { opacity: 1; transform: translateY(0); }
+
+  .section-label {
+    font-family: var(--f-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    color: var(--ink-faint);
+    text-transform: uppercase;
+    margin-bottom: 0.6rem;
+  }
+  .intro p { margin-bottom: 1rem; color: var(--ink-soft); font-size: 0.95rem; }
+  .intro p:last-child { margin-bottom: 0; }
+
+  /* ───────── Case file card ───────── */
+  .case-file {
+    position: relative;
+    background: var(--paper-card);
+    border: 1px solid var(--line);
+    border-radius: 2px;
+    padding: 1.8rem 1.7rem 1.9rem;
+    box-shadow: 0 10px 28px rgba(43,38,32,0.09), 0 1px 0 rgba(255,255,255,0.6) inset;
+  }
+  .case-file:nth-of-type(odd) { transform: rotate(-0.35deg); }
+  .case-file:nth-of-type(even) { transform: rotate(0.3deg); }
+  .case-file.visible:nth-of-type(odd) { transform: rotate(-0.35deg) translateY(0); }
+
+  .file-tape {
+    position: absolute;
+    top: -10px;
+    left: 28px;
+    width: 74px;
+    height: 24px;
+    background: linear-gradient(180deg, var(--tape2), var(--tape));
+    opacity: 0.8;
+    transform: rotate(-3deg);
+    box-shadow: 0 2px 3px rgba(0,0,0,0.08);
+  }
+
+  .file-head {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.7rem;
+    flex-wrap: wrap;
+    margin-top: 0.6rem;
+    margin-bottom: 1rem;
+  }
+  .file-num {
+    font-family: var(--f-mono);
+    font-size: 0.68rem;
+    color: var(--ink-faint);
+    letter-spacing: 0.08em;
+  }
+  .file-icon { font-size: 1.3rem; line-height: 1; }
+  .file-head h2 {
+    font-family: var(--f-display);
+    font-weight: 700;
+    font-size: 1.15rem;
+    color: var(--ink);
+    flex: 1;
+    min-width: 200px;
+    line-height: 1.5;
+  }
+
+  .stamp {
+    font-family: var(--f-display);
+    font-weight: 900;
+    font-size: 0.72rem;
+    letter-spacing: 0.15em;
+    padding: 5px 12px;
+    border: 2.5px solid currentColor;
+    border-radius: 4px;
+    transform: rotate(-6deg);
+    mix-blend-mode: multiply;
+    white-space: nowrap;
+    align-self: flex-start;
+  }
+  .stamp-solved { color: var(--stamp-solved); background: var(--stamp-solved-bg); }
+  .stamp-open   { color: var(--stamp-open);   background: var(--stamp-open-bg); }
+
+  .original-q {
+    font-family: var(--f-body);
+    font-style: italic;
+    font-size: 0.88rem;
+    color: var(--ink-soft);
+    border-left: 3px solid var(--thread);
+    padding: 0.5rem 0 0.5rem 0.9rem;
+    margin-bottom: 1.2rem;
+    background: rgba(138,125,92,0.06);
+  }
+
+  .file-body h3 {
+    font-family: var(--f-display);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: var(--thread);
+    margin: 1.1rem 0 0.5rem;
+  }
+  .file-body h3:first-child { margin-top: 0; }
+  .file-body p { font-size: 0.92rem; color: var(--ink); margin-bottom: 0.6rem; }
+
+  .evidence { list-style: none; }
+  .evidence li {
+    font-size: 0.88rem;
+    color: var(--ink-soft);
+    padding: 3px 0 3px 1.1rem;
+    position: relative;
+  }
+  .evidence li::before {
+    content: '—';
+    position: absolute;
+    left: 0;
+    color: var(--ink-faint);
+  }
+
+  blockquote.pull {
+    font-family: var(--f-body);
+    font-size: 0.9rem;
+    color: var(--ink);
+    background: var(--paper-card2);
+    border: 1px dashed var(--line-strong);
+    padding: 0.7rem 1rem;
+    margin: 0.8rem 0;
+    border-radius: 2px;
+  }
+  blockquote.pull cite {
+    display: block;
+    font-family: var(--f-mono);
+    font-style: normal;
+    font-size: 0.65rem;
+    color: var(--ink-faint);
+    margin-top: 0.4rem;
+  }
+
+  .open-thread {
+    margin-top: 1.1rem;
+    padding: 0.8rem 1rem;
+    background: var(--stamp-open-bg);
+    border-left: 3px solid var(--stamp-open);
+    border-radius: 2px;
+  }
+  .ot-label {
+    display: block;
+    font-family: var(--f-mono);
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: var(--stamp-open);
+    margin-bottom: 0.3rem;
+  }
+  .open-thread p { font-size: 0.86rem; color: var(--ink-soft); margin-bottom: 0; }
+
+  /* ───────── Synthesis ───────── */
+  .synthesis {
+    background: none;
+    border: none;
+    box-shadow: none;
+    padding: 0;
+  }
+  .synth-inner {
+    background: var(--paper-card);
+    border: 1px solid var(--line);
+    border-radius: 2px;
+    padding: 2rem 1.8rem;
+    box-shadow: 0 10px 28px rgba(43,38,32,0.09);
+  }
+  .synth-inner h2 {
+    font-family: var(--f-display);
+    font-weight: 900;
+    font-size: 1.3rem;
+    margin-bottom: 0.5rem;
+  }
+  .synth-inner > p.lede { color: var(--ink-soft); font-size: 0.92rem; margin-bottom: 1.6rem; }
+
+  .root-diagram { width: 100%; height: auto; margin: 0.5rem 0 1.8rem; }
+  .root-diagram text { font-family: var(--f-mono); }
+
+  .connect-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.8rem;
+    margin-bottom: 1.6rem;
+  }
+  .connect-item {
+    display: grid;
+    grid-template-columns: 90px 1fr;
+    gap: 0.9rem;
+    align-items: start;
+    padding: 0.7rem 0;
+    border-top: 1px solid var(--line);
+  }
+  .connect-item:first-child { border-top: none; }
+  .connect-tag {
+    font-family: var(--f-mono);
+    font-size: 0.65rem;
+    color: var(--thread);
+    letter-spacing: 0.04em;
+    padding-top: 2px;
+  }
+  .connect-body p { font-size: 0.88rem; color: var(--ink); }
+  .connect-body b { color: var(--ink); }
+
+  .final-note {
+    font-size: 0.9rem;
+    color: var(--ink-soft);
+    border-top: 1px dashed var(--line-strong);
+    padding-top: 1.2rem;
+  }
+
+  .oq-summary { margin-top: 2rem; }
+  .oq-summary h3 {
+    font-family: var(--f-display);
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--stamp-open);
+    margin-bottom: 0.6rem;
+    letter-spacing: 0.04em;
+  }
+  .oq-summary ol { padding-left: 1.2rem; }
+  .oq-summary li { font-size: 0.86rem; color: var(--ink-soft); margin-bottom: 0.4rem; }
+
+  footer {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 4rem;
+    text-align: center;
+    font-family: var(--f-mono);
+    font-size: 0.68rem;
+    color: var(--ink-faint);
+    letter-spacing: 0.04em;
+  }
+
+  @media (max-width: 560px) {
+    .file-head h2 { font-size: 1.02rem; }
+    .connect-item { grid-template-columns: 1fr; gap: 0.2rem; }
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-tape" aria-hidden="true"></div>
+  <div class="case-number">FILE No. 2026-07 ／ 自己分析プロジェクト</div>
+  <h1>自己調査ファイル</h1>
+  <p class="hero-sub">前回、自己紹介の説明中に突っ込まれた6つの問い ― その場では答えきれなかったものを、ここまでの自己分析で辿り直す</p>
+  <div class="hero-meta">
+    <span>対象：<b>かずま</b></span>
+    <span>期間：<b>2021.04 – 2026.07</b></span>
+    <span>目的：<b>就活・自己分析の核心整理</b></span>
+  </div>
+  <div class="hero-lede">
+    <b>この記録について。</b> マイクラ好きの少年が、なぜ「お金を稼ぎたい」「海外で働きたい」と言うようになり、建築士を目指しながらも情報系に転向したのか。前回それを説明したとき、6つの問いが突っ込まれた。ここでは、その問いを1つずつ開いて、今までの自己分析セッションから拾えた答え、そしてまだ拾えていない部分をそのまま記録する。解けていない問いは無理に埋めず、「検証中」のまま残してある。
+  </div>
+</header>
+
+<nav class="tab-rail" aria-label="ファイル一覧">
+  <div class="tab-rail-inner" id="tabRail">
+    <button class="tab-btn" data-target="intro">序文</button>
+    <button class="tab-btn" data-target="q1">01 マイクラ</button>
+    <button class="tab-btn" data-target="q2">02 ジェダイ哲学</button>
+    <button class="tab-btn" data-target="q3">03 お金と海外</button>
+    <button class="tab-btn" data-target="q4">04 受験の原動力</button>
+    <button class="tab-btn" data-target="q5">05 英語だけ好き</button>
+    <button class="tab-btn" data-target="q6">06 揺らいだ価値観</button>
+    <button class="tab-btn" data-target="synth">総括</button>
+  </div>
+</nav>
+
+<main>
+
+  <section id="intro" class="intro">
+    <div class="section-label">序文</div>
+    <p>6つの問いは、時系列ではなく「突っ込まれた順」で並んでいる。だが辿ってみると、小学生時代のマイクラから大学3年の今にかけて、ひとつながりの線になっていることがわかる。各ファイルには、わかっていること・今の解釈・そしてまだ検証中の部分を分けて記録した。</p>
+    <p>スタンプが <span class="stamp stamp-solved" style="transform:rotate(0deg); font-size:0.65rem; padding:2px 8px; display:inline-block; vertical-align:middle;">解明</span> のものは複数回のセッションで裏付けが取れたもの、<span class="stamp stamp-open" style="transform:rotate(0deg); font-size:0.65rem; padding:2px 8px; display:inline-block; vertical-align:middle;">検証中</span> のものはまだ言語化の途中にあるものを指す。</p>
+  </section>
+
+  <!-- ══ Q1 ══ -->
+  <section id="q1" class="case-file">
+    <div class="file-tape" aria-hidden="true"></div>
+    <div class="file-num">FILE 01 ／ 幼少期</div>
+    <div class="file-head">
+      <span class="file-icon">🎮</span>
+      <h2>マイクラの何にはまっていたの？何が楽しかったの？</h2>
+      <span class="stamp stamp-solved">一部解明</span>
+    </div>
+    <blockquote class="original-q">「マイクラの何にはまっていたの？何が楽しかったの？」</blockquote>
+    <div class="file-body">
+      <h3>わかっていること</h3>
+      <ul class="evidence">
+        <li>小6、友達がやっているのを見て「良さそう」と思い開始。プレイ形態は一人・友達の家・オンライン通信の3パターン</li>
+        <li>サバイバル、建築、インフラ整備（村人を使った収穫機・丸石製造機）、冒険（洞窟・ネザー要塞探検）まで幅広く遊んでいた</li>
+        <li>神社・寺・コンビニ・城・図書館・学校・道路・信号機など、現実にある建物の再現が好きだった</li>
+        <li>建築の工程（整地→資材集め→建築→装飾）のうち、一番時間をかけ夢中になっていたのは<b>装飾</b>。こだわるほど時間を忘れ、「ここも作りたい」と理想がどんどん広がる感覚があった</li>
+        <li>完成品を友達やネットの友達に見せるワクワクもあったが、誰にも見せなくても同じくらい夢中になれた</li>
+        <li>小学校〜中学の「秘密基地ごっこ」（竹や木で椅子・パチンコ・発射装置作り）でも同様の感覚があった</li>
+        <li>材料不足・落下死・敵襲撃といった壁は面倒に思いつつ辞めずに対策し、乗り越えると達成感を得ていた</li>
+        <li>現在のアプリ開発ではコードのほとんどをAIが書き、「自分の手で徐々に形にするワクワク」より「意思決定者としてどれだけ満足いくものを作れるか」に重心が移った、という自覚がある</li>
+      </ul>
+      <h3>今の解釈</h3>
+      <p>一番好きだったのは「何もないところから徐々に形になっていく過程」、特に装飾で理想がどんどん広がっていく感覚。完成させること自体に完結した楽しさがあり、他者からの承認は必須ではなかった。</p>
+      <blockquote class="pull">
+        マイクラの苦労（材料不足・敵襲撃など）は自ら求めて選びに行ったものではなく、作りたいものを実現する過程で自然発生したもの。「苦労の設計者」とマイクラの経験は別物。
+        <cite>― 2026.07.08 セッションより</cite>
+      </blockquote>
+      <p>ここから、「苦労の設計者」（後述ROOT 02）とは独立した、<b>「何もないところから形にしていく・作り込みたい」という欲求</b>の存在が新たに見えてきた。直接手を動かして作る形（マイクラの装飾、秘密基地作り）から、AIに指示を出し理想を実現する「意思決定者」としての形（アプリ開発、HTML整理での指示出し）へと、表現方法を変えながら持続している。</p>
+      <div class="open-thread">
+        <span class="ot-label">検証中：新しく見えてきた問い</span>
+        <p>この「作り込みたい欲求」は、以前見つかった「未踏の地への冒険欲求」（ROOT 03・お金の分析より）と根っこで繋がっているのか、独立した2つの欲求なのか。また「苦労の設計者」という価値観の形成時期はまだマイクラ以前（幼少期）まで遡れておらず、今回見つかった「作りたい欲求」がその形成に関与しているかも未検証。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ Q2 ══ -->
+  <section id="q2" class="case-file">
+    <div class="file-tape" aria-hidden="true"></div>
+    <div class="file-num">FILE 02 ／ 高校1年 冬</div>
+    <div class="file-head">
+      <span class="file-icon">📖</span>
+      <h2>ジェダイの哲学で、何によって、何がきっかけで将来を考えるようになったの？</h2>
+      <span class="stamp stamp-solved">解明</span>
+    </div>
+    <blockquote class="original-q">「ジェダイの哲学に何によって、何がきっかけで将来を考えるようになったの？」</blockquote>
+    <div class="file-body">
+      <h3>わかっていること</h3>
+      <ul class="evidence">
+        <li>それ以前から、父の影響によるスターウォーズ・ゲームの世界、NCS楽曲を通じた「意味はわからないが英語ってかっこいい」という感覚、中学での洋画・洋ドラマを通じた「個人が尊重される文化」への憧れが、行動に移せないまま蓄積していた</li>
+        <li>高1冬、『ジェダイの哲学』でルークが「農家を継ぐ人生から抜け出したい」と願う心情に自分を重ねた</li>
+        <li>ヨーダの「できるかできないかじゃない、やるかやらないかだ」という、思い込みを手放す教えに触れた</li>
+        <li>そこで「英語を話せるようになって、色んな国の人と交流するんだ」という決意に変わった</li>
+      </ul>
+      <h3>今の解釈</h3>
+      <p>この本は憧れを生んだきっかけではなく、すでに溜まっていた「かっこいいから憧れる」という受動的な感情を、「思い込みを手放して、やる」という行動原理に変換する装置として機能した。</p>
+      <blockquote class="pull">
+        本のマインドマップを作った際、「手放す」という言葉が先入観・主体性・価値観の3箇所に現れる構造を発見した。自分の回避動機（後悔したくない）をダークサイド側の「欲望＝短期的な原動力」と重ね、工業高校時代の二極的な見方から大学受験を経た「人それぞれ」への変化を、本の「先入観を手放す」構造そのものとして言語化した。
+        <cite>― 2026.07.08 セッションより</cite>
+      </blockquote>
+      <p>さらに掘り下げ、「主体性」には2層あるという整理に至った。<b>行動としての主体性</b>＝苦労する環境を自分で握りにいくこと（TOEICクラス直談判など）。<b>内心としての主体性</b>＝価値観を手放して受け身になること（バイトのピーク時に「あ、今イライラしてるな」と気づくメタ認知のような働き）。前者は行動、後者は考え方であり、階層が違うだけで矛盾しないという仮説に至った。</p>
+      <div class="open-thread">
+        <span class="ot-label">検証中：残っている部分</span>
+        <p>本を再読した上で、「文化を経験したい」という核がどの一節にもっと具体的に紐づいているのかは、まだ手つかず。また、「忙しさによる今への集中」が本当の意味での「手放し」なのか、それとも未来の心配を見ないで済む環境を作っているだけの意識逸らしなのかは、本人も「正直わからない」と保留した最重要ポイントとして残っている（→FILE 04の課題と直結）。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ Q3 ══ -->
+  <section id="q3" class="case-file">
+    <div class="file-tape" aria-hidden="true"></div>
+    <div class="file-num">FILE 03 ／ 高校1年 〜 現在</div>
+    <div class="file-head">
+      <span class="file-icon">💰</span>
+      <h2>「お金を稼ぎたい」「海外で暮らしたい・働きたい」になったのはなぜ？　何で叶えたいの？　叶えた先の何を求めているの？</h2>
+      <span class="stamp stamp-solved">解明</span>
+    </div>
+    <blockquote class="original-q">「『お金稼ぎたい』『海外で暮らしたい・働きたい』になったのはなんで？そもそもそれを何で叶えたいの？叶えた先の何を求めているの？」</blockquote>
+    <div class="file-body">
+      <h3>わかっていること</h3>
+      <ul class="evidence">
+        <li>高1冬、ジェダイ哲学をきっかけに「自分は何がしたいのか」を自問し、この2つの願いを初めて言語化した</li>
+        <li>小中学時代、自転車で20〜30km先の川の上流・廃村・お城・寺などへ、思い立ったらすぐ1人でも向かっていた</li>
+        <li>ドラクエの「ルーラ」（一度行った場所にしか使えない）システムが好きで、未踏の地への到達プロセス自体を楽しんでいた</li>
+        <li>大学1回生の国際ボランティア説明会で「渡航は自腹」と知り断念。海外留学も資金を稼ぎきれず実現しなかった</li>
+        <li>一方でDiscord語学交流→対面→国内旅行では、お金をかけない工夫で「海外の友達と話したい」という目的を達成できた</li>
+      </ul>
+      <h3>今の解釈</h3>
+      <p>お金は目的ではなく手段。目的の達成に他の手段がないと感じる場面でだけ強く立ち上がる、条件付きの欲求だとわかってきた。</p>
+      <blockquote class="pull">
+        幸せはお金では買えない。でも幸せを得る機会は買えると思う。人と会う機会はお金で買えるから。
+        <cite>― 2026.07.07 セッションより</cite>
+      </blockquote>
+      <p>叶えた先に求めているものの仮説：<b>長年遠くから見つめてきた文化を、実際にこの身で経験すること。</b>初対面でもフレンドリーな距離感、個人が尊重される社会を、自分の生活として味わいたいという願い。</p>
+      <p>「代替策が効く／効かない」を分ける基準についても一段掘り下げが進んだ。分かれ目は<b>「手段そのものより目的（真に欲しかったもの）を優先したかどうか」</b>。渡航・留学は「海外に行く」という手段自体にこだわり資金不足で断念したが、Discord語学交流→国内旅行は「海外の友達と話したい」という目的を優先したから、お金をかけない代替策にたどり着けた。振り返る中で、奨学金・プログラム・招待など、お金以外のルートもあり得ると気づいた。</p>
+      <div class="open-thread">
+        <span class="ot-label">検証中：残っている部分</span>
+        <p>この核自体、本人も「言葉にするのはまだ難しい」と認めている仮説段階。また「目的を優先したかどうか」という基準はまだ言葉として粗く、「お金がないと無理」という思い込み自体をどこまで崩せる余地があるのかは、次回への持ち越し。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ Q4 ══ -->
+  <section id="q4" class="case-file">
+    <div class="file-tape" aria-hidden="true"></div>
+    <div class="file-num">FILE 04 ／ 高校1〜3年</div>
+    <div class="file-head">
+      <span class="file-icon">🔥</span>
+      <h2>なぜ周りに流されず受験勉強を選択するほど、未来にエネルギーが湧いたの？</h2>
+      <span class="stamp stamp-solved">解明</span>
+    </div>
+    <blockquote class="original-q">「なんで周りの環境には流されず受験勉強を選択するほど、未来にエネルギーが湧いたのはなんで？なんでそんなに未来を叶えたいと思ったの？」</blockquote>
+    <div class="file-body">
+      <h3>わかっていること：4層の構造</h3>
+      <ul class="evidence">
+        <li><b>①構造的孤独</b> ― 工業高校は「大学受験する」が少数派の環境。「周りが動くから自分も動く」が機能せず、一人で動く筋肉がついた</li>
+        <li><b>②劣等感の転換</b> ― 中学時代、学力の高い同級生・部活仲間に囲まれて生まれた劣等感を、受験期に「見方を変えて燃料にする」方向へ転換した経験があった（令和6年1月27日）</li>
+        <li><b>③競争の軸の移動</b> ― 受験期は「見えない他の受験生」との競争、大学入学後は「過去の自分」との競争へと軸が移った</li>
+        <li><b>④後悔への恐怖</b> ― 父親（中卒）の姿を「勉強しなかった未来」の実像として重ね、「絶対こうなりたくない」という回避型動機が非常に強く作用した</li>
+      </ul>
+      <h3>今の解釈</h3>
+      <p>意志の強さや気合いではなく、環境・転換体験・競争観・恐怖という4つの積み重ねが、不快感を行動エネルギーに変える回路を作っていた。回避型動機（悪い状態を避けたい）は接近型動機（良いものを得たい）より短期的に強く作用する。</p>
+      <blockquote class="pull">
+        暖かくてぬるい、コンフォートゾーンに浸ったままでいいのか。アグレッシブな人生の方がワクワクする気持ちもある。
+        <cite>― 令和7年11月24日 ジャーナルより</cite>
+      </blockquote>
+      <p>直近のセッションでは、この回避型エンジンの現在地についてもう一段仮説が進んだ。「今、忙しくしていることが未来の心配を減らしているのかもしれない」という自己観察に対し、これが本当の意味で回避動機を「手放した」結果の集中なのか、単に未来の心配を見ないで済む環境を作ることで管理しているだけの意識逸らしなのかは、本人も「正直なところわからない」と保留している。</p>
+      <div class="open-thread">
+        <span class="ot-label">検証中：残っている部分</span>
+        <p>この回避型のエンジンは長期的にどこまで持続するか未検証。「お父さんよりはるかに先に来た」と感じた瞬間、このエンジンが弱まる可能性があり、そこから先の接近型動機（本当に向かいたいもの）への移行が今後の課題として残っている。次の具体的な検証ポイントは、忙しさが途切れた瞬間（長期休み・就活の待ち時間など）に未来の心配がどう振る舞うか。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ Q5 ══ -->
+  <section id="q5" class="case-file">
+    <div class="file-tape" aria-hidden="true"></div>
+    <div class="file-num">FILE 05 ／ 幼少期〜中学</div>
+    <div class="file-head">
+      <span class="file-icon">🎧</span>
+      <h2>勉強が嫌いな中で、なぜ英語だけは好きだったの？</h2>
+      <span class="stamp stamp-solved">解明</span>
+    </div>
+    <blockquote class="original-q">「勉強が嫌い中で、なんで英語は好きなの？」</blockquote>
+    <div class="file-body">
+      <h3>わかっていること</h3>
+      <ul class="evidence">
+        <li>小学生時代、父の影響でスターウォーズとゲームを好きになった</li>
+        <li>ゲーム実況・キル集動画でNCS（海外の無料BGM）の曲に触れ、意味は分からないまま「英語ってかっこいい」という感覚が音の響きから生まれた</li>
+        <li>同時期、公文式で発音重視の英語学習を開始し、日本語英語化しない土台ができた</li>
+        <li>小6頃、Fortniteで英語圏プレイヤーとチャット・ボイスチャットで交流する小さな実践があった</li>
+        <li>中学の英語授業冒頭で流れる洋楽をきっかけに洋画・洋ドラマへ関心が拡大し、「初対面でもフレンドリー」「個人が尊重される」文化への憧れが芽生えた</li>
+      </ul>
+      <h3>今の解釈</h3>
+      <p>英語は最初から「勉強」として始まっていない。テストのための知識ではなく、娯楽に混ざった「音」として関わり始め、次第に「文化そのもの」への憧れに育っていった。だからこそ、他の教科と同じ「勉強」という枠に入らず、嫌悪感の対象にならなかったと考えられる。</p>
+      <div class="open-thread">
+        <span class="ot-label">検証中：残っている部分</span>
+        <p>「個人が尊重される文化への憧れ」が、日本の集団主義的な環境への違和感の裏返しなのか、それとも独立した純粋な憧れなのかは、まだ切り分けられていない。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ Q6 ══ -->
+  <section id="q6" class="case-file">
+    <div class="file-tape" aria-hidden="true"></div>
+    <div class="file-num">FILE 06 ／ 高校2〜3年</div>
+    <div class="file-head">
+      <span class="file-icon">🏗️</span>
+      <h2>揺らいだということは、建築士になること以上に大事にしていた価値観があったはず。それは何か？</h2>
+      <span class="stamp stamp-solved">解明</span>
+    </div>
+    <blockquote class="original-q">「揺らぐということは、建設で働くこと（建築士になること）以上に自分が大事にしている価値観があったから、未来の変更があったと思うが、その価値観ってなんだろうか？」</blockquote>
+    <div class="file-body">
+      <h3>わかっていること</h3>
+      <ul class="evidence">
+        <li>高2の建設インターンで、現場監督・職人の働く姿が「やりがい」ではなく「生活のためにやっている」ように見え、冷めた感覚が生まれた</li>
+        <li>本人が期待していたのは「主体性・誇りを持って働く姿」。そのギャップが最初のヒビになった</li>
+        <li>現場監督本人からも「現場監督はやめて設計・製図の方がいい」と言われる一方、当の製図（手描き）は苦手だった、という「二重の行き止まり」</li>
+        <li>同時期、大学ではTOEICクラスへ自ら直談判して編入、英語コミュニティでも段階的に負荷の高い環境に自ら踏み込んでいった</li>
+      </ul>
+      <h3>今の解釈</h3>
+      <p>建設現場は、設計者・現場監督・職人の間で板挟みにされ意見を通しにくく、働く環境そのものを選べず与えられた条件に耐えるしかない構造だった。一方でTOEICクラス直談判や英語コミュニティでの環境構築は、すべて「自分から苦労する環境を設計・獲得しに行く」行動だった。</p>
+      <blockquote class="pull">
+        「自分が苦労する環境を、自分で設計・獲得できること」という価値観。建築士という職業そのものへの憧れより、この「苦労の設計者でいられるかどうか」が上位に置かれていた。
+        <cite>― self-analysis-fukuhonna-kurou.md（2026.07.06–07）</cite>
+      </blockquote>
+      <p>「不本意な苦労」の正体は苦労の量そのものではなく、<b>その苦労が自分の設計によるものかどうか</b>。ITには「劣悪な環境を技術で変える」という、自分が環境の設計に関われる余白が感じられたことが、建築からの転向を後押しした。</p>
+      <div class="open-thread">
+        <span class="ot-label">検証中：残っている部分</span>
+        <p>「苦労の設計者でありたい」という価値観そのものが、いつ・何をきっかけに形成されたのかは未検証。FILE 01（マイクラ）の掘り下げにより、「苦労の設計者」とマイクラの経験自体は別物だと判明した一方、そこで新たに見つかった「何もないところから作り込みたい欲求」がこの価値観の形成に関与しているかどうかは、まだ接続できていない。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══ Synthesis ══ -->
+  <section id="synth" class="synthesis">
+    <div class="synth-inner">
+      <div class="section-label">総括</div>
+      <h2>6つの問い、そして今の情報系志望へ</h2>
+      <p class="lede">バラバラに突っ込まれた6つの問いを並べ直すと、1本の線として読める。回避動機というエンジンの上に、「苦労の設計者でありたい」という方法論が乗り、その先に「憧れた文化を経験したい」という方向が示されている。</p>
+
+      <svg class="root-diagram" viewBox="0 0 680 220" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="6つの問いが現在のキャリア軸に収束する図">
+        <defs>
+          <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="#8a7d5c"/>
+          </marker>
+        </defs>
+        <g font-family="JetBrains Mono" font-size="11" fill="#6d6353">
+          <text x="40"  y="24">Q4 受験の原動力</text>
+          <text x="40"  y="70">Q6 揺らいだ価値観</text>
+          <text x="40"  y="116">Q3 お金と海外</text>
+          <text x="40"  y="162">Q5 英語だけ好き</text>
+          <text x="40"  y="208">Q1・Q2 原点（一部解明）</text>
+        </g>
+        <g stroke="#8a7d5c" stroke-width="1.4" fill="none" marker-end="url(#arrow)">
+          <path d="M175,20 C 320,20 350,95 430,105"/>
+          <path d="M195,66 C 320,66 350,95 430,105"/>
+          <path d="M175,112 C 300,112 350,100 430,105"/>
+          <path d="M185,158 C 300,150 350,110 430,105"/>
+          <path d="M235,204 C 320,190 360,120 430,105" stroke-dasharray="3 4"/>
+        </g>
+        <g>
+          <rect x="435" y="78" width="220" height="54" rx="3" fill="#f3ecd9" stroke="#2b2620" stroke-width="1"/>
+          <text x="545" y="100" font-family="Zen Kaku Gothic New" font-weight="700" font-size="12" fill="#2b2620" text-anchor="middle">今：AI × ドメイン × 英語</text>
+          <text x="545" y="118" font-family="JetBrains Mono" font-size="10" fill="#6d6353" text-anchor="middle">海外テック就職を見据えたキャリア軸</text>
+        </g>
+      </svg>
+
+      <div class="connect-grid">
+        <div class="connect-item">
+          <div class="connect-tag">Q6 → 今</div>
+          <div class="connect-body"><p><b>「苦労の設計者でありたい」</b>という核心価値観は、研究テーマ（LLM×HPCコード生成）を自分で見出し、個人開発・チーム開発でDBスキーマ設計をリードする今の動き方にそのまま表れている。</p></div>
+        </div>
+        <div class="connect-item">
+          <div class="connect-tag">Q3・Q5 → 今</div>
+          <div class="connect-body"><p><b>「憧れた文化をこの身で経験したい」</b>という方向は、CASEC/TOEIC学習や海外テック企業を視野に入れた就活軸に繋がっている。英語は「勉強」ではなく「その先の経験への手段」であり続けている。</p></div>
+        </div>
+        <div class="connect-item">
+          <div class="connect-tag">Q4 → 今</div>
+          <div class="connect-body"><p><b>回避型のエンジン</b>（後悔したくない）は、今もインターン応募・研究発表・IVS CORE運営参加といった行動量の土台になっている。ただしこのエンジンの持続可能性、接近型動機への移行は未解決のまま。</p></div>
+        </div>
+        <div class="connect-item">
+          <div class="connect-tag">Q1・Q2 → 今</div>
+          <div class="connect-body"><p>マイクラで感じていたのは「装飾で理想がどんどん広がる」「何もないところから形にする」感覚で、他者承認は必須ではなかった。これは今の研究・アプリ開発で「意思決定者としてこだわる」動き方に繋がっている。ジェダイ哲学の核は、憧れを行動原理に変換した装置として解明済みだが、<b>「苦労の設計者」の形成時期</b>と<b>「文化を経験したい」核の一節への紐づけ</b>は、まだ検証中。</p></div>
+        </div>
+      </div>
+
+      <div class="oq-summary">
+        <h3>未消化のまま残っている問い</h3>
+        <ol>
+          <li>マイクラで見つかった「作り込みたい欲求」は、「未踏の地への冒険欲求」（ROOT 03）と根っこで繋がっているのか、独立した2つの欲求なのか</li>
+          <li>『ジェダイの哲学』再読を経た、「文化を経験したい」という核の再検証</li>
+          <li>「代替策が効く／効かない」を分ける基準＝「目的を優先したか」をより言語化し、「お金がないと無理」という思い込み自体を崩せる余地があるか</li>
+          <li>「苦労の設計者でありたい」という価値観がいつ・何をきっかけに形成されたか。「作り込みたい欲求」がその形成に関与しているか</li>
+          <li>「個人が尊重される文化への憧れ」は、集団主義への違和感の裏返しか、独立した憧れか</li>
+          <li>「忙しさによる今への集中」は、回避動機を本当に手放した結果なのか、それとも見ないで済む環境を作る意識逸らしなのか</li>
+          <li>回避型動機から接近型動機へのシフトは、いつ・どう起きうるか</li>
+        </ol>
+      </div>
+
+      <p class="final-note">まだ答えきれていない箇所は多いが、それでいい。今回はここまでの現在地をそのまま残す。次回のセッションで、検証中のスタンプがひとつずつ「解明」に変わっていく想定。</p>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  自己分析ノート ― 2026年7月時点の現在地　／　次回更新予定：検証中のファイルから着手
+</footer>
+
+<script>
+  // Tab rail: scroll-to + active state
+  const buttons = document.querySelectorAll('.tab-btn');
+  const targets = Array.from(buttons).map(b => document.getElementById(b.dataset.target)).filter(Boolean);
+
+  buttons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const el = document.getElementById(btn.dataset.target);
+      if (el) {
+        const rail = document.querySelector('.tab-rail').offsetHeight;
+        const y = el.getBoundingClientRect().top + window.scrollY - rail - 12;
+        window.scrollTo({ top: y, behavior: 'smooth' });
+      }
+    });
+  });
+
+  const spyObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const id = entry.target.id;
+        buttons.forEach(b => b.classList.toggle('active', b.dataset.target === id));
+      }
+    });
+  }, { rootMargin: '-40% 0px -50% 0px', threshold: 0 });
+  targets.forEach(t => spyObserver.observe(t));
+
+  // Reveal on scroll
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.08 });
+  document.querySelectorAll('main section').forEach(s => revealObserver.observe(s));
+</script>
+
+</body>
+</html>

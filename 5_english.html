@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>学問としての英語 / 娯楽としての英語 ― 自己分析ノート</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Inter:wght@400;500;600;700&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #f7f6f3;
+    --surface: #ffffff;
+    --surface2: #f0efe9;
+    --border: rgba(0,0,0,0.10);
+    --border-md: rgba(0,0,0,0.18);
+    --text-primary: #1a1918;
+    --text-secondary: #6b6963;
+    --text-tertiary: #9e9b93;
+
+    /* 望んだ苦労 = chosen（暖色） / 望まない苦労 = imposed（寒色） */
+    --chosen: #c9791a;
+    --chosen-bg: #fdf3e6;
+    --imposed: #536178;
+    --imposed-bg: #eef0f3;
+    --thread: #2f52a0;
+    --thread-bg: #eef1fb;
+
+    --radius: 12px;
+    --radius-sm: 7px;
+    --font-body: 'Noto Sans JP', sans-serif;
+    --font-mono: 'Inter', sans-serif;
+  }
+
+  body {
+    font-family: var(--font-body);
+    background: var(--bg);
+    color: var(--text-primary);
+    line-height: 1.8;
+    padding: 0 0 80px;
+  }
+
+  .wrap { max-width: 880px; margin: 0 auto; padding: 0 24px; }
+
+  header.hero {
+    padding: 64px 24px 40px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+  }
+  .hero-inner { max-width: 880px; margin: 0 auto; }
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    letter-spacing: 0.14em;
+    color: var(--text-tertiary);
+    text-transform: uppercase;
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .eyebrow::before {
+    content: "";
+    width: 20px; height: 1px;
+    background: var(--text-tertiary);
+    display: inline-block;
+  }
+  h1 {
+    font-size: 30px;
+    font-weight: 900;
+    letter-spacing: -0.01em;
+    line-height: 1.45;
+    margin-bottom: 14px;
+  }
+  h1 .vs { color: var(--text-tertiary); font-weight: 500; padding: 0 6px; }
+  h1 .a { color: var(--imposed); }
+  h1 .b { color: var(--chosen); }
+  .hero-sub {
+    font-size: 15px;
+    color: var(--text-secondary);
+    max-width: 620px;
+  }
+  .hero-meta {
+    margin-top: 24px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--text-tertiary);
+  }
+
+  section { padding: 48px 24px; }
+  section + section { border-top: 1px solid var(--border); }
+
+  .section-label {
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-tertiary);
+    margin-bottom: 18px;
+    font-weight: 600;
+  }
+
+  /* 事実 */
+  .fact-list { list-style: none; }
+  .fact-list li {
+    position: relative;
+    padding: 12px 0 12px 22px;
+    font-size: 14.5px;
+    color: var(--text-primary);
+    border-bottom: 1px dashed var(--border);
+  }
+  .fact-list li:last-child { border-bottom: none; }
+  .fact-list li::before {
+    content: "";
+    position: absolute;
+    left: 0; top: 20px;
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--text-tertiary);
+  }
+
+  /* キークォート */
+  .quote-block {
+    margin: 40px 0 8px;
+    padding: 28px 30px;
+    background: var(--imposed-bg);
+    border-left: 3px solid var(--imposed);
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  }
+  .quote-block p {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--imposed);
+    font-style: italic;
+    line-height: 1.6;
+  }
+  .quote-block span {
+    display: block;
+    margin-top: 10px;
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    color: var(--text-tertiary);
+    font-style: normal;
+  }
+
+  /* 対比カード */
+  .contrast {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin: 28px 0;
+  }
+  @media (max-width: 640px) { .contrast { grid-template-columns: 1fr; } }
+  .c-card {
+    border-radius: var(--radius);
+    padding: 22px 22px 24px;
+    border: 1px solid var(--border);
+  }
+  .c-card.imposed { background: var(--imposed-bg); border-color: rgba(83,97,120,0.25); }
+  .c-card.chosen { background: var(--chosen-bg); border-color: rgba(201,121,26,0.3); }
+  .c-tag {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-bottom: 10px;
+    display: inline-block;
+  }
+  .c-card.imposed .c-tag { color: var(--imposed); }
+  .c-card.chosen .c-tag { color: var(--chosen); }
+  .c-title { font-size: 16px; font-weight: 700; margin-bottom: 10px; }
+  .c-desc { font-size: 13.5px; color: var(--text-secondary); }
+
+  /* フォーク図 */
+  .fork-wrap {
+    margin: 36px 0 10px;
+    background: var(--surface2);
+    border-radius: var(--radius);
+    padding: 32px 28px;
+  }
+  .fork-svg { width: 100%; height: auto; display: block; }
+
+  /* 抽出された価値観 */
+  .insight-box {
+    background: var(--thread-bg);
+    border-radius: var(--radius);
+    padding: 26px 28px;
+    margin-bottom: 16px;
+  }
+  .insight-box .label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: var(--thread);
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+  .insight-box p { font-size: 15px; }
+  .insight-box p + p { margin-top: 10px; }
+  .hypothesis {
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px dashed rgba(47,82,160,0.25);
+    font-size: 13.5px;
+    color: var(--text-secondary);
+  }
+  .hypothesis strong { color: var(--thread); }
+
+  /* 就活 */
+  .use-grid { display: grid; grid-template-columns: 1fr; gap: 14px; }
+  .use-card {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 18px 20px;
+    background: var(--surface);
+  }
+  .use-card .k {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-tertiary);
+    margin-bottom: 6px;
+    font-weight: 600;
+  }
+  .use-card .v { font-size: 14px; }
+
+  /* 未消化の問い */
+  .q-list { list-style: none; }
+  .q-list li {
+    padding: 16px 0 16px 40px;
+    position: relative;
+    border-bottom: 1px solid var(--border);
+    font-size: 14.5px;
+  }
+  .q-list li:last-child { border-bottom: none; }
+  .q-list li::before {
+    content: "?";
+    position: absolute;
+    left: 0; top: 14px;
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    background: var(--surface2);
+    color: var(--text-tertiary);
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: 13px;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  footer {
+    text-align: center;
+    padding: 40px 24px 0;
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    color: var(--text-tertiary);
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="eyebrow">自己分析ノート ・ 2026.07.08</div>
+    <h1><span class="a">学問としての英語</span><span class="vs">vs</span><span class="b">娯楽としての英語</span></h1>
+    <p class="hero-sub">同じ「英語の文法を勉強する」という行為が、なぜ片方は苦痛で、片方は苦にならなかったのか。その分かれ目を掘り下げたセッションの記録。</p>
+    <div class="hero-meta">CASE — 苦労の設計者（ROOT 02）／ 4つ目の証拠</div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <section>
+    <div class="section-label">事実</div>
+    <ul class="fact-list">
+      <li>「学問としての英語」（文法・構文・品詞）は嫌いだったが、「娯楽としての英語」（洋楽・洋画・海外YouTube）は好きだった</li>
+      <li>英語好きの原点は小学生時代。父の影響でスターウォーズ・ゲームに触れ、NCS（海外の無料BGM）の曲から「意味はわからないが英語がかっこいい」という音の感覚が生まれた（既存セッションで確認済み）</li>
+      <li>学校の文法学習は「テストのための暗記」であり、自然に身につけたいという感覚と相反していた</li>
+      <li>一方、洋楽の歌詞の意味を理解したい・洋画やYouTubeを字幕なしで理解したいという目的のために調べる文法学習は、感覚がまったく違った</li>
+      <li>「テストのための暗記は自分が望んだ苦労じゃない」という言葉がそのまま出た</li>
+    </ul>
+  </section>
+
+  <section>
+    <div class="section-label">本人の解釈</div>
+    <div class="contrast">
+      <div class="c-card imposed">
+        <span class="c-tag">望まない苦労</span>
+        <div class="c-title">① テストのための暗記</div>
+        <div class="c-desc">文法・構文・品詞を、評価のために覚える。目的は外から与えられていて、自分が決めたものではない。</div>
+      </div>
+      <div class="c-card chosen">
+        <span class="c-tag">望んだ苦労</span>
+        <div class="c-title">② 歌詞・映画を理解するための学習</div>
+        <div class="c-desc">「意味を理解したい」「字幕なしで観たい」という自分で決めた目的のために、必要な文法を後から取りに行く。</div>
+      </div>
+    </div>
+
+    <div class="quote-block">
+      <p>「①は自分が望んだ苦労じゃない。」</p>
+      <span>2026.07.08 セッションより</span>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-label">抽出された価値観・行動特性（仮説）</div>
+
+    <div class="insight-box">
+      <div class="label">Pattern</div>
+      <p>「苦労が苦にならない」かどうかは、苦労の内容ではなく、<strong>目的と苦労のどちらが先に来たか</strong>という順番で決まっている。</p>
+      <p>目的を自分で決めてから、その目的のために必要な苦労を自分で選びに行く型 ＝「苦労の設計者」（ROOT 02）そのもの。今回、娯楽としての英語学習がその4つ目の具体例として確認できた。</p>
+    </div>
+
+    <div class="fork-wrap">
+      <svg class="fork-svg" viewBox="0 0 800 360" xmlns="http://www.w3.org/2000/svg">
+        <!-- start node -->
+        <rect x="300" y="12" width="200" height="42" rx="8" fill="#ffffff" stroke="#c8c5bd"/>
+        <text x="400" y="38" text-anchor="middle" font-family="Noto Sans JP" font-size="13" font-weight="700" fill="#1a1918">苦労が始まる場面</text>
+
+        <!-- branch lines -->
+        <path d="M400,54 L400,80 L160,80 L160,108" fill="none" stroke="#c8c5bd" stroke-width="1.5"/>
+        <path d="M400,54 L400,80 L640,80 L640,108" fill="none" stroke="#c8c5bd" stroke-width="1.5"/>
+
+        <!-- left branch label (chosen) -->
+        <rect x="60" y="108" width="200" height="46" rx="8" fill="#fdf3e6" stroke="#c9791a" stroke-opacity="0.4"/>
+        <text x="160" y="128" text-anchor="middle" font-family="Inter" font-size="10.5" letter-spacing="0.05em" fill="#c9791a" font-weight="700">目的が先 → 苦労を選ぶ</text>
+        <text x="160" y="144" text-anchor="middle" font-family="Noto Sans JP" font-size="11" fill="#6b6963">目的を自分で決めてから苦労を取りに行く</text>
+
+        <!-- right branch label (imposed) -->
+        <rect x="540" y="108" width="200" height="46" rx="8" fill="#eef0f3" stroke="#536178" stroke-opacity="0.35"/>
+        <text x="640" y="128" text-anchor="middle" font-family="Inter" font-size="10.5" letter-spacing="0.05em" fill="#536178" font-weight="700">苦労が先 → 目的は後付け</text>
+        <text x="640" y="144" text-anchor="middle" font-family="Noto Sans JP" font-size="11" fill="#6b6963">環境が先にあり、目的は与えられる</text>
+
+        <!-- left branch down to 3 items -->
+        <path d="M160,154 L160,172 L120,172 L120,192" fill="none" stroke="#c8c5bd" stroke-width="1.2"/>
+        <path d="M160,154 L160,172 L160,192" fill="none" stroke="#c8c5bd" stroke-width="1.2"/>
+        <path d="M160,154 L160,172 L200,172 L200,192" fill="none" stroke="#c8c5bd" stroke-width="1.2"/>
+
+        <rect x="30" y="192" width="180" height="60" rx="8" fill="#ffffff" stroke="#c9791a" stroke-opacity="0.5"/>
+        <text x="120" y="216" text-anchor="middle" font-family="Noto Sans JP" font-size="12" font-weight="700" fill="#1a1918">TOEIC直談判</text>
+        <text x="120" y="234" text-anchor="middle" font-family="Noto Sans JP" font-size="10.5" fill="#6b6963">課に自ら交渉して編入</text>
+
+        <rect x="220" y="252" width="180" height="60" rx="8" fill="#ffffff" stroke="#c9791a" stroke-opacity="0.5"/>
+        <text x="310" y="276" text-anchor="middle" font-family="Noto Sans JP" font-size="12" font-weight="700" fill="#1a1918">卓球ノート</text>
+        <text x="310" y="294" text-anchor="middle" font-family="Noto Sans JP" font-size="10.5" fill="#6b6963">対戦相手を自ら分析</text>
+        <path d="M200,192 L280,222 L280,252" fill="none" stroke="#c8c5bd" stroke-width="1.2"/>
+
+        <rect x="30" y="252" width="180" height="60" rx="8" fill="#ffffff" stroke="#c9791a" stroke-opacity="0.5"/>
+        <text x="120" y="276" text-anchor="middle" font-family="Noto Sans JP" font-size="12" font-weight="700" fill="#1a1918">娯楽としての英語</text>
+        <text x="120" y="294" text-anchor="middle" font-family="Noto Sans JP" font-size="10.5" fill="#6b6963">歌詞・映画を理解したくて学ぶ</text>
+        <path d="M120,192 L120,252" fill="none" stroke="#c8c5bd" stroke-width="1.2"/>
+
+        <!-- right branch down to 建設 with flip note -->
+        <path d="M640,154 L640,192" fill="none" stroke="#c8c5bd" stroke-width="1.2"/>
+        <rect x="550" y="192" width="180" height="60" rx="8" fill="#ffffff" stroke="#536178" stroke-opacity="0.5"/>
+        <text x="640" y="216" text-anchor="middle" font-family="Noto Sans JP" font-size="12" font-weight="700" fill="#1a1918">建設インターン</text>
+        <text x="640" y="234" text-anchor="middle" font-family="Noto Sans JP" font-size="10.5" fill="#6b6963">環境を選べない構造に直面</text>
+
+        <rect x="550" y="264" width="180" height="40" rx="8" fill="#eef0f3" stroke="#536178" stroke-opacity="0.3" stroke-dasharray="3 3"/>
+        <text x="640" y="288" text-anchor="middle" font-family="Noto Sans JP" font-size="11" fill="#536178">→ 望んだ苦労から転向</text>
+
+        <!-- bottom line -->
+        <text x="400" y="345" text-anchor="middle" font-family="Noto Sans JP" font-size="11.5" fill="#9e9b93">同じ「苦労」でも、どちらの順番かで感覚がまったく変わる</text>
+      </svg>
+    </div>
+
+    <div class="insight-box" style="margin-top: 20px;">
+      <div class="hypothesis">
+        <strong>次回検証したい問い：</strong> この「目的が先か、環境が先か」という分岐条件は、他の未解決エピソード（マイクラの装飾へのこだわり、ROOT01の劣等感回避）にも当てはまるか。
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-label">就活での使いどころ</div>
+    <div class="use-grid">
+      <div class="use-card">
+        <div class="k">向いている設問</div>
+        <div class="v">「なぜ嫌いなことでも続けられたか」「主体性をどう発揮したか」「英語学習で工夫したこと」</div>
+      </div>
+      <div class="use-card">
+        <div class="k">語り方の注意</div>
+        <div class="v">「英語が好きだった」で終わらせない。「目的を自分で設定し、そのために必要な苦労を自分で選びに行った」という一貫した行動原理として語ると、TOEIC直談判・卓球ノートと地続きの説得力が出る。</div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-label">未消化の問い（次回の入口）</div>
+    <ul class="q-list">
+      <li>「目的が先か、環境が先か」という分岐条件は、マイクラの装飾へのこだわり・ROOT01の劣等感回避にも当てはまるか</li>
+      <li>脇に置いた「真田昌幸への憧れ→卓球でのパターン抽出」は、別の切り口として今後どう扱うか</li>
+    </ul>
+  </section>
+
+</div>
+
+<footer>自己分析ノート ― 2026.07.08 セッションより</footer>
+
+</body>
+</html>

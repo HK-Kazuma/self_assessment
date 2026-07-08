@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>回避動機のダークサイド性と「手放す」の実体験 — 自己分析ノート</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600;800&family=Zen+Kaku+Gothic+New:wght@300;400;500;700&family=Zen+Old+Mincho:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --dark-bg: #171922;
+    --dark-bg-2: #1f2230;
+    --light-bg: #eef0e6;
+    --light-bg-2: #e6e9dc;
+    --ink: #23241f;
+    --paper-ink: #2b2b25;
+    --ember: #a8453a;
+    --ember-dim: #7c352d;
+    --gold: #c9a15c;
+    --gold-dim: #a9834a;
+    --bridge: #4d7d74;
+    --bridge-bright: #6ba69a;
+    --line: rgba(255,255,255,0.12);
+    --line-dark: rgba(35,36,31,0.14);
+  }
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; padding:0; background:var(--dark-bg); }
+  body{
+    font-family:'Zen Kaku Gothic New', sans-serif;
+    color:#e8e6de;
+    line-height:1.85;
+    -webkit-font-smoothing:antialiased;
+  }
+  .display{ font-family:'Shippori Mincho', serif; }
+  .oldmincho{ font-family:'Zen Old Mincho', serif; }
+
+  /* ============ HERO ============ */
+  .hero{
+    position:relative;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    padding: 8vh 8vw 10vh;
+    background:
+      radial-gradient(ellipse 80% 60% at 20% 15%, rgba(168,69,58,0.16), transparent 60%),
+      radial-gradient(ellipse 70% 60% at 85% 85%, rgba(201,161,92,0.10), transparent 60%),
+      var(--dark-bg);
+    overflow:hidden;
+  }
+  .hero::after{
+    content:"";
+    position:absolute; inset:0;
+    background-image:
+      linear-gradient(var(--line) 1px, transparent 1px);
+    background-size: 100% 3px;
+    opacity:0.03;
+    pointer-events:none;
+  }
+  .eyebrow{
+    font-size:0.72rem;
+    letter-spacing:0.32em;
+    color:var(--gold);
+    text-transform:uppercase;
+    margin-bottom:1.6rem;
+    display:flex; align-items:center; gap:0.9rem;
+  }
+  .eyebrow::before{
+    content:""; width:28px; height:1px; background:var(--gold-dim);
+    display:inline-block;
+  }
+  .hero h1{
+    font-size: clamp(2.1rem, 4.6vw, 3.6rem);
+    font-weight:600;
+    line-height:1.5;
+    margin:0 0 1.6rem;
+    max-width:14ch;
+    background:linear-gradient(100deg,#f3ece0 10%, var(--gold) 55%, #e8e6de 90%);
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+  }
+  .hero .thesis{
+    max-width:52ch;
+    font-size:1.05rem;
+    color:#c7c4b8;
+    border-left:2px solid var(--ember-dim);
+    padding-left:1.4rem;
+  }
+  .hero .meta{
+    margin-top:3rem;
+    display:flex; gap:2.4rem; flex-wrap:wrap;
+    font-size:0.82rem; color:#8f8d82;
+  }
+  .hero .meta strong{ color:#d8d5c8; font-weight:500; display:block; font-size:0.7rem; letter-spacing:0.08em; margin-bottom:0.3rem; text-transform:uppercase; color:var(--bridge-bright);}
+
+  /* spine */
+  .spine{
+    position:absolute;
+    right:6vw; top:0; bottom:0;
+    width:1px;
+    background:linear-gradient(180deg, var(--ember) 0%, var(--gold) 100%);
+    opacity:0.35;
+    display:none;
+  }
+  @media(min-width:900px){ .spine{ display:block; } }
+
+  /* ============ SECTION shells ============ */
+  section{ padding: 7rem 8vw; position:relative; }
+  .sec-dark{ background:var(--dark-bg); }
+  .sec-transition{
+    background:var(--dark-bg-2);
+    color:#e8e6de;
+  }
+  .sec-light{ background:var(--light-bg); color:var(--ink); }
+
+  .kicker{
+    font-size:0.7rem; letter-spacing:0.28em; text-transform:uppercase;
+    color:var(--gold-dim); margin-bottom:1rem; font-weight:500;
+  }
+  .sec-light .kicker{ color:var(--ember-dim); }
+
+  h2.section-title{
+    font-size:clamp(1.5rem,2.6vw,2.1rem);
+    font-weight:600;
+    max-width:20ch;
+    margin:0 0 2.6rem;
+  }
+
+  /* ============ BRIDGE DIAGRAM ============ */
+  .bridge-wrap{ max-width:920px; margin:0 auto; }
+  .bridge-svg{ width:100%; height:auto; display:block; }
+  .bridge-caption{
+    text-align:center; font-size:0.85rem; color:#9a988c; margin-top:1.2rem;
+    max-width:56ch; margin-left:auto; margin-right:auto;
+  }
+
+  /* ============ QUOTE ============ */
+  blockquote{
+    margin: 2.2rem 0; padding: 1.6rem 2rem;
+    border-left:3px solid var(--gold-dim);
+    background:rgba(201,161,92,0.06);
+    font-family:'Zen Old Mincho', serif;
+    font-size:1.08rem;
+    color:#efece2;
+  }
+  .sec-light blockquote, .sec-transition blockquote{
+    color:var(--paper-ink);
+    background:rgba(168,69,58,0.05);
+    border-left-color:var(--ember-dim);
+  }
+  blockquote cite{ display:block; margin-top:0.8rem; font-size:0.78rem; font-style:normal; color:#8f8d82; font-family:'Zen Kaku Gothic New',sans-serif;}
+
+  /* ============ INSIGHT CARDS ============ */
+  .insight-grid{
+    display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+    gap:1.4rem; margin-top:2.4rem;
+  }
+  .insight-card{
+    background:rgba(255,255,255,0.03);
+    border:1px solid var(--line);
+    border-radius:2px;
+    padding:1.7rem 1.6rem;
+    position:relative;
+  }
+  .sec-light .insight-card{
+    background:rgba(35,36,31,0.03);
+    border-color:var(--line-dark);
+  }
+  .insight-card .num{
+    font-family:'Shippori Mincho',serif;
+    font-size:0.75rem; color:var(--bridge-bright); letter-spacing:0.1em;
+    margin-bottom:0.9rem; display:block;
+  }
+  .insight-card h3{ font-size:1.02rem; margin:0 0 0.7rem; font-weight:600; }
+  .insight-card p{ font-size:0.9rem; color:#c7c4b8; margin:0; }
+  .sec-light .insight-card p{ color:#54524a; }
+
+  /* ============ TIMELINE ============ */
+  .flow{
+    display:flex; flex-direction:column; gap:0; margin-top:2rem;
+  }
+  .flow-item{
+    display:grid; grid-template-columns:100px 1fr; gap:1.6rem;
+    padding:1.5rem 0; border-bottom:1px solid var(--line-dark);
+  }
+  .flow-item:last-child{ border-bottom:none; }
+  .flow-tag{
+    font-size:0.72rem; letter-spacing:0.08em; text-transform:uppercase;
+    color:var(--ember-dim); font-weight:500; padding-top:0.2rem;
+  }
+  .flow-item.light .flow-tag{ color:var(--bridge); }
+  .flow-body p{ margin:0.3rem 0 0; color:#54524a; font-size:0.92rem; }
+  .flow-body h4{ margin:0; font-size:1rem; font-weight:600; color:var(--ink); }
+
+  /* ============ SKILL OUTPUT ============ */
+  .doc-card{
+    background:#fff;
+    border:1px solid var(--line-dark);
+    border-radius:3px;
+    padding:2.4rem 2.2rem;
+    margin-bottom:1.6rem;
+    box-shadow:0 1px 2px rgba(35,36,31,0.04);
+  }
+  .doc-card h3{
+    font-family:'Shippori Mincho',serif;
+    font-size:1.15rem; margin:0 0 1.2rem;
+    display:flex; align-items:center; gap:0.7rem;
+    color:var(--ink);
+  }
+  .doc-card h3 .dot{ width:8px; height:8px; border-radius:50%; background:var(--ember-dim); display:inline-block; }
+  .doc-card.interp h3 .dot{ background:var(--bridge); }
+  .doc-card.hypo h3 .dot{ background:var(--gold-dim); }
+  .doc-card.job h3 .dot{ background:#5a6b8f; }
+  .doc-card.open h3 .dot{ background:#8f8d82; }
+
+  .doc-card ul{ margin:0; padding-left:1.3rem; }
+  .doc-card li{ margin-bottom:0.65rem; font-size:0.93rem; color:#3a3a33; }
+  .doc-card li:last-child{ margin-bottom:0; }
+  .doc-card li::marker{ color:var(--gold-dim); }
+
+  .hypo-block{
+    background:#f7f4ea;
+    border-left:2px solid var(--gold-dim);
+    padding:1rem 1.2rem;
+    margin-bottom:1.1rem;
+    font-size:0.92rem;
+  }
+  .hypo-block:last-child{ margin-bottom:0; }
+  .hypo-block .label{
+    font-size:0.68rem; letter-spacing:0.1em; text-transform:uppercase;
+    color:var(--gold-dim); font-weight:700; display:block; margin-bottom:0.4rem;
+  }
+  .hypo-block .next-q{ margin-top:0.5rem; color:#6b6a5f; font-style:italic; font-size:0.87rem; }
+
+  .job-cols{ display:grid; grid-template-columns:1fr; gap:1.4rem; }
+  @media(min-width:700px){ .job-cols{ grid-template-columns:1fr 1fr; } }
+  .job-cols h4{ font-size:0.82rem; text-transform:uppercase; letter-spacing:0.05em; color:#5a6b8f; margin:0 0 0.6rem; }
+
+  .open-q{
+    display:flex; gap:0.9rem; align-items:flex-start; padding:0.9rem 0;
+    border-bottom:1px dashed var(--line-dark); font-size:0.93rem; color:#3a3a33;
+  }
+  .open-q:last-child{ border-bottom:none; }
+  .open-q .mark{ color:#8f8d82; font-family:'Shippori Mincho',serif; }
+
+  footer{
+    background:var(--light-bg); color:#8f8d82;
+    text-align:center; padding:3.5rem 8vw 4rem; font-size:0.82rem;
+  }
+  footer .sig{ font-family:'Zen Old Mincho',serif; font-size:1rem; color:var(--ember-dim); margin-bottom:0.6rem; }
+
+  @media(max-width:600px){
+    section{ padding:4.5rem 6vw; }
+    .flow-item{ grid-template-columns:1fr; gap:0.4rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ HERO ============ -->
+<div class="hero">
+  <div class="spine"></div>
+  <div class="eyebrow">自己分析セッションノート</div>
+  <h1 class="display">回避動機のダークサイド性と<br>「手放す」の実体験</h1>
+  <p class="thesis">『ジェダイの哲学』マインドマップを起点に、工業高校時代の「己の視点」から大学受験を経た「手放す」への移行を、実際に自分が通過していたことを確認したセッション。</p>
+  <div class="meta">
+    <div><strong>Date</strong>2026.07.08</div>
+    <div><strong>Source</strong>『ジェダイの哲学』マインドマップ</div>
+    <div><strong>Mode</strong>横断分析／概念接続</div>
+  </div>
+</div>
+
+<!-- ============ BRIDGE DIAGRAM ============ -->
+<section class="sec-dark">
+  <div class="kicker">Core Discovery</div>
+  <h2 class="section-title display">マップの対岸にある2つの枝を、<br>同じ1つの体験で行き来していた</h2>
+
+  <div class="bridge-wrap">
+    <svg class="bridge-svg" viewBox="0 0 920 380" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="pathGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#a8453a"/>
+          <stop offset="100%" stop-color="#6ba69a"/>
+        </linearGradient>
+      </defs>
+
+      <!-- dark side node -->
+      <g>
+        <rect x="40" y="40" width="330" height="110" rx="2" fill="#221f1f" stroke="#7c352d" stroke-width="1"/>
+        <text x="64" y="70" fill="#c9866f" font-family="Zen Kaku Gothic New" font-size="12" letter-spacing="2">DARK SIDE ／ 怒り → 恐怖 → 己の視点</text>
+        <text x="64" y="102" fill="#efece2" font-family="Shippori Mincho" font-size="17">二極（正義／悪）</text>
+        <text x="64" y="128" fill="#a89f92" font-family="Zen Kaku Gothic New" font-size="12">工業高校時代：勉強に主体的でない同級生を見下していた</text>
+      </g>
+
+      <!-- living force node -->
+      <g>
+        <rect x="548" y="228" width="330" height="112" rx="2" fill="#e6e9dc" stroke="#4d7d74" stroke-width="1"/>
+        <text x="572" y="258" fill="#4d7d74" font-family="Zen Kaku Gothic New" font-size="12" letter-spacing="2">LIVING FORCE ／ 現実 → 先入観 →</text>
+        <text x="572" y="290" fill="#23241f" font-family="Shippori Mincho" font-size="17">手放す</text>
+        <text x="572" y="316" fill="#54524a" font-family="Zen Kaku Gothic New" font-size="12">大学受験後：「勉強への考え方は人それぞれ」に変わった</text>
+      </g>
+
+      <!-- connecting path -->
+      <path d="M 370 130 C 480 160, 460 230, 548 270" fill="none" stroke="url(#pathGrad)" stroke-width="2" stroke-dasharray="4 5"/>
+      <circle cx="459" cy="196" r="26" fill="none" stroke="#c9a15c" stroke-width="1"/>
+      <text x="459" y="192" fill="#c9a15c" font-family="Shippori Mincho" font-size="11" text-anchor="middle">大学</text>
+      <text x="459" y="207" fill="#c9a15c" font-family="Shippori Mincho" font-size="11" text-anchor="middle">受験</text>
+
+      <text x="459" y="245" fill="#8f8d82" font-family="Zen Kaku Gothic New" font-size="11" text-anchor="middle" font-style="italic">1つの出来事ではなく、高校生活全体の経験</text>
+    </svg>
+    <p class="bridge-caption">「自分という人間がわかってきたからこそ、他人の見え方も変わった」——ダークサイド側の「己の視点」ノードから、リビングフォース側の「先入観を手放す」ノードへ。単発のきっかけではなく、大学受験という経験全体を通した移行だった。</p>
+  </div>
+</section>
+
+<!-- ============ TRANSITION: NARRATIVE ============ -->
+<section class="sec-transition">
+  <div class="kicker">Session Flow</div>
+  <h2 class="section-title">今日たどった4つの発見</h2>
+
+  <div class="insight-grid">
+    <div class="insight-card">
+      <span class="num">01 ／ 原動力</span>
+      <h3>回避動機は「短期的」側にある</h3>
+      <p>マップの「原動力」は愛（長期的）と欲望（短期的）に分かれていた。「後悔したくない」という回避動機は、人生規模で見れば短期的なエンジンだと自分で位置づけた。</p>
+    </div>
+    <div class="insight-card">
+      <span class="num">02 ／ 恐怖の中身</span>
+      <h3>「5人の平均」という未知の恐怖</h3>
+      <p>父親への恐怖に加え、工業高校時代から「身近な5人の平均が自分になる」という心配があったことが今回初めて言語化された。</p>
+    </div>
+    <div class="insight-card">
+      <span class="num">03 ／ 手放しの実例</span>
+      <h3>二極的な見方を、実際に手放していた</h3>
+      <p>「己の視点で正義と悪を決めてた」という自覚から、「人それぞれ」という見方への移行。これはマップ最重要キーワード「手放す」の実体験だった。</p>
+    </div>
+    <div class="insight-card">
+      <span class="num">04 ／ 主体性の2層</span>
+      <h3>行動の主体性と、内心の主体性は別物</h3>
+      <p>苦労する環境を握りにいく行動の主体性と、価値観を手放して受け身になる内心の主体性。バイトでのメタ認知はその内心側の実例だが、回避動機という「一定期間続くもの」には同じやり方が効くか未検証。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ QUOTES / KEY MOMENTS ============ -->
+<section class="sec-light">
+  <div class="kicker">Verbatim</div>
+  <h2 class="section-title">セッション中に出てきた言葉</h2>
+
+  <blockquote>
+    すべては、後悔したくないという未来の心配をしているのだからね。
+  </blockquote>
+
+  <blockquote>
+    最初は見下すような考えでいたけど、勉強に対する考え方は人それぞれだし、目指すものも違う。だから、さっきのマインドマップみたいに、己の視点で勝手に正義と悪を決めてたんだろうね。
+    <cite>― 工業高校時代を振り返って</cite>
+  </blockquote>
+
+  <blockquote>
+    行動としての主体性が苦労する環境を自分で握りにいく主体性、内心としての主体性が価値観を手放して受け身になる主体性だと思う。後者は行動ではなく考え方だからね。別物だよ。
+  </blockquote>
+
+  <blockquote>
+    後悔したくないという損失の恐れかな。だからこそ未来をあまり見ずに今を見ることでもある。忙しくしていることが未来の心配を減らしているのかも。
+  </blockquote>
+</section>
+
+<!-- ============ SKILL FORMAT OUTPUT ============ -->
+<section class="sec-light">
+  <div class="kicker">自己分析フォーマット</div>
+  <h2 class="section-title">[自己分析] ジェダイの哲学マップ深掘り<br>――回避動機のダークサイド性と「手放す」の実体験</h2>
+  <p style="color:#8f8d82;font-size:0.85rem;margin-top:-1.6rem;margin-bottom:2.4rem;">2026-07-08</p>
+
+  <div class="doc-card">
+    <h3><span class="dot"></span>事実</h3>
+    <ul>
+      <li>『ジェダイの哲学』のマインドマップを作成。「手放す」が3箇所（先入観・主体性・価値観）に出現し、「原動力」が愛（長期的）と欲望（短期的）の両サイドに出現する構造を発見した</li>
+      <li>概念の重複（シスが「支配」と「恐怖」両方に出るなど）を、整理不足ではなく「概念同士が独立していない＝2極性ではない」というマップ全体の主張と一致する特徴として読み直した</li>
+      <li>自分の回避動機について「恐らく人生規模で見たら短期なのかな」と位置づけた</li>
+      <li>「ダークサイド的な部分があると思う。すべては、後悔したくないという未来の心配をしているのだから」と言語化した</li>
+      <li>未来の心配には「お父さんのようになりたくない」に加え、工業高校時代に感じていた「身近な5人の平均が自分」という心配も含まれていた</li>
+      <li>工業高校時代、あまり主体的に勉強していないように見える同級生を「最初は見下すような考えでいた」。後に「勉強に対する考え方は人それぞれ。己の視点で勝手に正義と悪を決めてたんだろうね」と気づいた</li>
+      <li>その見方の変化は単一の出来事ではなく「大学受験を通して高校生活の中で経験したことが関与」し、徐々に起きた。大学入学後に本を再読した際、見え方が違った</li>
+      <li>大学受験を通して「自分が努力できる条件」が分かった：一緒に向かう仲間を作る、できたことに意識を向ける、勉強は家以外でやる、目標は紙か何かに書く、誰かを頼り頼られること</li>
+      <li>本の中の一節を引用：「どんな価値観でも一度握らなければ手放すこともできない」「自らの意志で受け身になることが最大の主体性」</li>
+      <li>「内心としての主体性」の体感例として、メタ認知を挙げた：バイトのピーク時に「あ、今イライラしてるな」と感情の起伏に気づく</li>
+      <li>「気づいただけでもかなり大きいよ。気づいたらその気持ちが分散されるような気がする」</li>
+      <li>バイトのイライラと回避動機は「別物」。理由は「バイトのイライラはその一時の感情。回避動機はある一定期間続くもの」</li>
+      <li>今握っているものを「後悔したくないという損失の恐れ」と言語化。「だからこそ未来をあまり見ずに今を見る」「忙しくしていることが未来の心配を減らしているのかも」</li>
+      <li>忙しさによる今への集中が、手放しなのか意識逸らしなのかは「正直なところわからない」と保留した</li>
+    </ul>
+  </div>
+
+  <div class="doc-card interp">
+    <h3><span class="dot"></span>本人の解釈</h3>
+    <ul>
+      <li>自分の回避動機は、マップの「欲望←原動力（短期的）」というダークサイドの構造に重なる。すべてが「後悔したくない」という未来の心配から来ているため</li>
+      <li>工業高校時代の「見下すような考え」は、マップの「己の視点→二極（正義／悪）」そのものだった</li>
+      <li>見方が変わったのは「自分という人間がわかってきたからこそ他人の見え方も変わった」から。これは「先入観を手放した」に近い感覚</li>
+      <li>「主体性」には2層ある。行動としての主体性＝苦労する環境を自分で握りにいくこと。内心としての主体性＝価値観を手放して受け身になること。「後者は行動ではなく考え方だから、別物」</li>
+      <li>バイトのイライラ（一時的感情）に効く「気づく→分散」のメカニズムは、一定期間続く回避動機には同じようには効かないと感じる</li>
+      <li>「今に集中するという状況や環境を作っている」という認識。ただしそれが本当の「手放し」なのかは未判断</li>
+    </ul>
+  </div>
+
+  <div class="doc-card hypo">
+    <h3><span class="dot"></span>抽出された価値観・行動特性（仮説）</h3>
+    <div class="hypo-block">
+      <span class="label">仮説①</span>
+      かずまの中では「手放す」がすでに一度実体験として起きている。工業高校時代の二極的な見方（ダークサイド側「己の視点」）から、大学受験を経て「人それぞれ」（リビングフォース側「先入観→手放す」）への移行がそれ。マップの対岸にある2つの枝を、同じ1つの体験で行き来していた。
+      <div class="next-q">次回検証する問い：この「先入観の手放し」体験は他の場面（例：父親への見方の更新）でも同じプロセスで起きているか？</div>
+    </div>
+    <div class="hypo-block">
+      <span class="label">仮説②</span>
+      主体性の2層構造（行動／内心）は、既存の「苦労の設計者」という定義と矛盾せず、階層が違うだけ。行動の層では握りにいき、内心の層では手放す、という使い分けが成立している可能性。
+      <div class="next-q">次回検証する問い：TOEIC直談判のような「握りにいく行動」の最中、内心では何を手放していた（あるいは握っていた）か？</div>
+    </div>
+    <div class="hypo-block">
+      <span class="label">仮説③</span>
+      「忙しさによる今への集中」は、回避動機（損失の恐れ）を手放すのではなく、見ないで済む環境を作ることで管理している状態かもしれない。これは回避動機→接近動機へのシフトという長期課題の現在地を示している。
+      <div class="next-q">次回検証する問い：忙しさが途切れた瞬間（長期休み・就活の待ち時間など）に未来の心配はどう振る舞うか？</div>
+    </div>
+  </div>
+
+  <div class="doc-card job">
+    <h3><span class="dot"></span>就活での使いどころ</h3>
+    <div class="job-cols">
+      <div>
+        <h4>向いている設問</h4>
+        <ul>
+          <li>「価値観が変わった経験は？」→ 工業高校での二極的な見方から大学受験を経た「人それぞれ」への転換。自己理解が他者理解に繋がった筋は面接で通りやすい</li>
+          <li>「自分の弱み・課題は？」→ 回避動機が短期的エンジンであることを自覚し、接近動機への転換を課題として言語化している姿はメタ認知力として機能する</li>
+          <li>「ストレスへの対処法は？」→ バイトのピーク時のメタ認知（気づくと分散される）は具体的で使いやすい</li>
+        </ul>
+      </div>
+      <div>
+        <h4>使うときの注意</h4>
+        <ul>
+          <li>「ジェダイの哲学」「フォース」「ダークサイド」という語彙は面接ではそのまま使わない。「ある本をきっかけに」「恐怖を原動力にしていたことに気づき」など一般語に翻訳する</li>
+          <li>「見下していた」という過去の自己開示は、変化の物語とセットでのみ使う。単体で出すとリスクがある</li>
+          <li>「回避動機がダークサイド的」という自己認識は、ネガティブな自己評価ではなく「エンジンの構造を理解している」というフレームで語る</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="doc-card open">
+    <h3><span class="dot"></span>未消化の問い（次回の入口）</h3>
+    <div class="open-q"><span class="mark">―</span><span>「忙しさによる今への集中」は、手放した結果の集中か、回避的な意識逸らしか。本人も「正直わからない」と保留した最重要ポイント</span></div>
+    <div class="open-q"><span class="mark">―</span><span>内心としての主体性（価値観を手放す）が、バイトのイライラのような一時的感情ではなく、回避動機のような「一定期間続くもの」に対しても機能する条件はあるのか</span></div>
+    <div class="open-q"><span class="mark">―</span><span>ライトサイドの「冷静・どう在るか」ノード（マップ上で未展開）と、今日出てきた「内心としての主体性」はどう接続するか――マップ側の宿題と自己分析側の宿題が同じ場所を指している</span></div>
+  </div>
+</section>
+
+<footer>
+  <div class="sig">かずま個人の自己分析ノート</div>
+  ローカル保存用 ／ 2026.07.08
+</footer>
+
+</body>
+</html>
