@@ -27,6 +27,8 @@
     --ore-bg: rgba(180,121,31,0.12);
     --stone: #656b5e;
     --stone-bg: rgba(101,107,94,0.09);
+    --redstone: #a13d2e;
+    --redstone-bg: rgba(161,61,46,0.1);
 
     --display: 'Zen Antique', serif;
     --body: 'Zen Kaku Gothic New', sans-serif;
@@ -79,8 +81,16 @@
     gap: 10px;
     align-items: center;
     margin-bottom: 18px;
+    flex-wrap: wrap;
   }
   .file-label .dot { width: 6px; height: 6px; background: var(--grass); border-radius: 1px; }
+  .file-label .update-tag {
+    background: var(--redstone-bg);
+    color: var(--redstone);
+    padding: 2px 8px;
+    border-radius: 2px;
+    letter-spacing: 0.04em;
+  }
 
   h1.q {
     font-family: var(--display);
@@ -111,6 +121,7 @@
   }
   .stamp-before { background: var(--stone-bg); color: var(--stone); border: 1px solid rgba(101,107,94,0.35); }
   .stamp-after { background: var(--grass-bg); color: var(--grass); border: 1px solid rgba(86,110,56,0.4); }
+  .stamp-update { background: var(--redstone-bg); color: var(--redstone); border: 1px solid rgba(161,61,46,0.35); }
 
   /* ===== STRATA BAR (signature element) ===== */
   .strata {
@@ -174,6 +185,7 @@
     align-items: baseline;
     gap: 12px;
     margin-bottom: 20px;
+    flex-wrap: wrap;
   }
   .sec-num {
     font-family: var(--mono);
@@ -185,6 +197,16 @@
     font-size: 1.4rem;
     font-weight: 400;
     color: var(--ink);
+  }
+  .sec-tag-new {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.06em;
+    color: var(--redstone);
+    background: var(--redstone-bg);
+    padding: 2px 8px;
+    border-radius: 2px;
+    text-transform: uppercase;
   }
 
   /* facts timeline */
@@ -212,6 +234,23 @@
     border-radius: 1px;
   }
   .t-item b { color: var(--ink); font-weight: 700; }
+  .t-item.new {
+    background: var(--redstone-bg);
+    border-radius: 0 4px 4px 0;
+    padding: 10px 12px;
+    margin-left: -12px;
+  }
+  .t-item.new::before { border-color: var(--redstone); background: var(--redstone-bg); }
+  .t-item .new-mark {
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    color: var(--redstone);
+    background: rgba(161,61,46,0.14);
+    padding: 1px 6px;
+    border-radius: 2px;
+    margin-right: 6px;
+    letter-spacing: 0.04em;
+  }
 
   /* interpretation quotes */
   .quote {
@@ -224,6 +263,16 @@
     color: var(--ink);
   }
   .quote:last-child { margin-bottom: 0; }
+  .quote.updated { background: var(--redstone-bg); border-left-color: var(--redstone); }
+  .quote .q-tag {
+    display: block;
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    color: var(--redstone);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
 
   /* hypothesis box */
   .hypo-box {
@@ -268,6 +317,26 @@
   .fork-col p { font-size: 0.92rem; color: var(--ink-soft); }
   @media (max-width: 560px) { .fork { grid-template-columns: 1fr; } }
 
+  /* tension box (new, redstone-toned) */
+  .tension-box {
+    background: var(--redstone-bg);
+    border: 1px solid rgba(161,61,46,0.3);
+    border-radius: 6px;
+    padding: 24px 26px;
+    margin-bottom: 18px;
+  }
+  .tension-box .tension-tag {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    color: var(--redstone);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    display: block;
+  }
+  .tension-box p { font-size: 0.98rem; }
+  .tension-box p + p { margin-top: 10px; }
+
   /* job-hunting use */
   .use-grid { display: grid; gap: 14px; }
   .use-item {
@@ -308,6 +377,18 @@
     color: var(--stone);
     font-size: 1.1rem;
   }
+  .open-item.resolved {
+    opacity: 0.6;
+    border-style: solid;
+    border-color: rgba(86,110,56,0.35);
+  }
+  .open-item.resolved::before { content: "✓"; color: var(--grass); font-family: var(--mono); font-size: 0.95rem; }
+  .open-item.brand-new {
+    border-style: solid;
+    border-color: rgba(161,61,46,0.35);
+    background: var(--redstone-bg);
+  }
+  .open-item.brand-new::before { color: var(--redstone); }
   .open-item:last-child { margin-bottom: 0; }
 
   footer {
@@ -333,12 +414,13 @@
 <body>
 
 <header class="hero">
-  <div class="file-label"><span class="dot"></span>SELF-ANALYSIS FILE 01 ／ 更新版 ・ 2026.07.08</div>
+  <div class="file-label"><span class="dot"></span>SELF-ANALYSIS FILE 01 ／ 更新版 ・ 2026.07.08 <span class="update-tag">追記 2026.07.09</span></div>
   <h1 class="q">マイクラの何にはまっていたの？何が楽しかったの？</h1>
-  <p class="thesis">小6、友達がやっているのを見て始めたマインクラフト。掘っていくと出てきたのは「苦労の設計者」とはまた別の、もっと古い欲求だった。</p>
+  <p class="thesis">小6、友達がやっているのを見て始めたマインクラフト。掘っていくと出てきたのは「苦労の設計者」とはまた別の、もっと古い欲求だった。さらに掘ると、そのアイデアの生まれ方には具体的なメカニズムがあった。</p>
   <div class="stamp-row">
     <span class="stamp stamp-before">Before：検証中</span>
     <span class="stamp stamp-after">After：一部解明 → 新しい問いが発生</span>
+    <span class="stamp stamp-update">追記：機構を特定 → Speee面談での緊張点を発見</span>
   </div>
 
   <div class="strata">
@@ -368,6 +450,8 @@
       <div class="t-item">完成品を友達やネットの友達に見せるワクワクもあったが、<b>誰にも見せなくても同じくらい夢中になれた</b></div>
       <div class="t-item">小学校〜中学の「秘密基地ごっこ」（竹や木で椅子・パチンコ・発射装置作り）でも同様の感覚があった</div>
       <div class="t-item">マイクラ内の壁（材料不足・落下死・敵襲撃）は面倒に思いつつ辞めずに対策し、乗り越えると達成感を得ていた</div>
+      <div class="t-item new"><span class="new-mark">追記</span><b>建築・装飾のアイデアは、最初から頭の中にあったわけではなかった。</b>事前に大量のYouTube動画（「〇〇ハウスの作り方」「おしゃれな噴水の作り方」「学校の作り方」「モダンなハウスの作り方」「秘密基地の作り方」等、複数ジャンル・複数スタイル）をインプットし、それぞれの装飾方法や資材の使い方を自由に組み合わせ・アレンジする中で、初めて「自分のアイデア」が生まれるようになった</div>
+      <div class="t-item new"><span class="new-mark">追記</span>同じパターンが現在のAI活用にもそのまま表れている。プロンプト作成はX・YouTube・記事に載っている複数のプロンプト例を参照し、組み合わせて使うスタイル。「Claudeでプロンプトを作りChatGPT/Geminiに貼る」という手法自体も、どこかの記事で見た方法をそのまま採用している。本人いわく「自分からこういう指示の出し方がいいっていうのはあまりない」</div>
       <div class="t-item">現在のアプリ開発ではコードのほとんどをAIが書き、「自分の手で徐々に形にするワクワク」より「意思決定者としてどれだけ満足いくものを作れるか」に重心が移った。このシフトはAIの発展に伴うもの</div>
       <div class="t-item">研究テーマ（LLMによるHPCコード生成・最適化。Tascell／OpenCilkは先行研究がほぼ無い分野）を選んだ理由は「わからないことの方が多い」という感覚に近い</div>
       <div class="t-item">AIとの壁打ちをHTMLで整理する際、レイアウト自体はAIに任せつつ「視覚的にわかりやすく」「図を使って」等の指示を出すことにこだわりを感じている</div>
@@ -381,6 +465,10 @@
     <div class="quote">「苦労の設計者」とマイクラの経験は別物。マイクラの苦労（材料不足・敵襲撃など）は自ら求めて選びに行ったものではなく、作りたいものを実現する過程で自然発生したもの。</div>
     <div class="quote">研究分野選びの「ブルーオーシャンに踏み込む」感覚は、装飾へのこだわりよりも、以前見つかった「未踏の地への冒険欲求」に近い。</div>
     <div class="quote">現在のHTML整理における「AIへの指示の出し方」を、マイクラの装飾へのこだわりの延長として位置づけている。</div>
+    <div class="quote updated">
+      <span class="q-tag">解釈のアップデート（2026.07.09）</span>
+      理想は最初から頭の中にあったのではなく、<b>複数の参照点（動画・記事・他者の実例）をインプットし、それらを組み合わせ・アレンジする過程で生まれてくる</b>。アイデアの源泉はゼロからの独創ではなく、既存の要素の再結合にある。
+    </div>
   </section>
 
   <section class="block">
@@ -396,31 +484,42 @@
         <p>自ら苦労する環境を選びに行く。TOEICクラス直談判、英語コミュニティでの段階的な環境構築が該当。</p>
       </div>
       <div class="fork-col">
-        <h4>作り込みたい欲求（今回・未命名）</h4>
-        <p>作りたいものが先にあり、苦労はその過程で自然発生する。マイクラの装飾、秘密基地作りが該当。</p>
+        <h4>組み合わせ型のアイデア生成（今回・確定）</h4>
+        <p>複数の参照点をインプットし、組み合わせ・アレンジする中でアイデアが生まれる。マイクラの動画インプット→装飾アレンジ、プロンプト例の収集・組み合わせが該当。</p>
       </div>
     </div>
   </section>
 
   <section class="block">
-    <div class="sec-head"><span class="sec-num">04</span><span class="sec-title">就活での使いどころ</span></div>
+    <div class="sec-head"><span class="sec-num">04</span><span class="sec-title">見えてきた緊張点</span><span class="sec-tag-new">追記 2026.07.09</span></div>
+    <div class="tension-box">
+      <span class="tension-tag">Tension</span>
+      <p>「組み合わせ型のアイデア生成」というスタイルは効率的で悪いものではないが、Speeeのカジュアル面談で語った「作るだけでなく、課題設定や意思決定ができるエンジニアになりたい」という志向――つまり<b>「ゼロから何を作るべきかを定義する力」</b>とは、性質が異なる。既存の手法を集めて選び組み合わせることと、そもそも何もない状態から問いを立てることは別のスキルである。</p>
+      <p>本人はこの点について、<b>「ゼロから何を作るべきかを定義する力は、これから伸ばしていきたい力」</b>と明確に位置づけている（2026-07-09）。つまり現状の強み（組み合わせ・アレンジ力）と、志向する成長方向（ゼロベース定義力）は、現時点では一致していないことを自覚した状態。</p>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="sec-head"><span class="sec-num">05</span><span class="sec-title">就活での使いどころ</span></div>
     <div class="use-grid">
       <div class="use-item">
         <span class="use-label">向いている設問</span>
-        <span>「昔から好きだったこと」「物作りへの興味の原点」「AI時代にどう向き合っているか」</span>
+        <span>「昔から好きだったこと」「物作りへの興味の原点」「AI時代にどう向き合っているか」「自分の弱み・伸ばしたい力」</span>
       </div>
       <div class="use-item">
         <span class="use-label">使うときの注意</span>
-        <span>「昔からゲームで物を作るのが好きだった」で終わらせない。「作る行為への没頭」から「意思決定者としてのこだわり」への変化として語ると、AI時代の物作りへの向き合い方として説得力が増す。</span>
+        <span>「昔からゲームで物を作るのが好きだった」で終わらせない。「複数の実例をインプットし組み合わせる中でアイデアが生まれる」という具体的な思考パターンとして語り、それが今のプロンプト作成スタイルにも一貫して表れていることまで示すと説得力が増す。ただし「ゼロから課題設定・意思決定ができるエンジニアになりたい」と語る場合は、現状のスタイル（組み合わせ型）と目指す姿（ゼロベース定義力）の間にギャップがあることを本人が自覚している、という誠実さもセットで見せられると強い。</span>
       </div>
     </div>
   </section>
 
   <section class="block">
-    <div class="sec-head"><span class="sec-num">05</span><span class="sec-title">未消化の問い（次回の入口）</span></div>
+    <div class="sec-head"><span class="sec-num">06</span><span class="sec-title">未消化の問い（次回の入口）</span></div>
     <ul class="open-list">
       <li class="open-item">「作り込みたい欲求」と「未踏の地への冒険欲求（ROOT 03）」は根っこで繋がっているのか、独立した2つの欲求なのか</li>
       <li class="open-item">「苦労の設計者」という価値観の形成時期は、まだマイクラ以前（幼少期）まで遡れていない。今回見つかった「作りたい欲求」がその形成に関与しているか</li>
+      <li class="open-item resolved">組み合わせ型のアイデア生成は、マイクラだけの特性か現在も続くパターンか　→　現在のプロンプト作成にも一貫して表れていることを確認済み（2026.07.09）</li>
+      <li class="open-item brand-new">「ゼロから何を作るべきかを定義する力」を伸ばすには、具体的にどんな経験・環境が必要か。今の「組み合わせ型」の強みを土台にどう発展させられるか</li>
     </ul>
   </section>
 
@@ -428,7 +527,7 @@
 </div>
 
 <footer>
-  <span>自己分析ノート — 2026.07.08</span>
+  <span>自己分析ノート — 2026.07.08 作成 ／ 2026.07.09 追記</span>
   <span>FILE 01 ／ SELF-ANALYSIS PROJECT</span>
 </footer>
 
